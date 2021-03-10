@@ -1,0 +1,61 @@
+<tool id="immuneml_apply_ml_model" name="Apply machine learning models to new data" version="@VERSION@.0">
+
+  <description></description>
+      <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+  <command><![CDATA[
+      #if $collection_input
+          #for $col in $collection_input
+              cp $col "$col.name"  &&
+          #end for
+      #end if
+
+      ln -s $ml_model "$ml_model.element_identifier" &&
+
+      cp "$yaml_input" yaml_copy &&
+
+      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyMLApplicationTool &&
+
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip ${archive}
+
+      ]]>
+  </command>
+  <inputs>
+    <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+    <param name="ml_model" type="data" format="zip" label="Trained ML model" multiple="false"/>
+    <param name="collection_input" type="data_collection"  label="Dataset as a collection" optional="true" help="This field accepts datasets in collection format, as created by Create Dataset tool."/>
+  </inputs>
+    <outputs>
+      <data format="html" name="html_outfile" label="Summary: ML model application"/>
+      <data format="zip" name="archive" label="Archive: ML Model Application"/>
+    </outputs>
+
+
+  <help>
+<![CDATA[
+
+      After having trained ML models to a given dataset, these models can be applied to a new dataset using this Galaxy tool. If you instead want to train new ML models, use one of the following tools:
+
+      - `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_
+
+      - `Train immune receptor classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_classifiers>`_
+
+      - `Train immune repertoire classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=novice_immuneml_interface>`_
+
+      For more details on how to apply ML models in Galaxy, see `the documentation <https://docs.immuneml.uio.no/galaxy/galaxy_apply_ml_models.html>`_.
+
+      **Tool output**
+
+      This Galaxy tool will produce the following history elements:
+
+      - Summary: ML model application: a HTML page that allows you to browse through all results, including predictions made on the new dataset.
+
+      - Archive: ML model application: a .zip file containing the complete output folder as it was produced by immuneML. This folder contains the output of the MLApplication instruction such as the predictions on the new dataset. Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.   
+
+ ]]> 
+  </help>
+
+</tool>

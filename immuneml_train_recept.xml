@@ -1,0 +1,196 @@
+<tool id="immuneml_train_classifiers" name="Train immune receptor classifiers (simplified interface)" version="@VERSION@.0">
+  <description></description>
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <command><![CDATA[
+
+      #if $input_dataset
+          #for $f in $input_dataset
+              cp $f "$f.name"  &&
+          #end for
+      #end if
+
+        python '$__tool_directory__/build_yaml_from_arguments.py' --output_path $specs.files_path
+        #if $labels
+            --labels "$labels"
+        #end if
+        #if $ml_methods
+            #set methods_splitted = str($ml_methods).replace(",", " ")
+            --ml_methods $methods_splitted
+        #end if
+        #if $training_percentage
+            --training_percentage $training_percentage
+        #end if
+        #if $split_count
+            --split_count $split_count
+        #end if
+
+        --gap_type $gap_cond.gap_type
+        #if $gap_cond.gap_type == "ungapped"
+            --k $gap_cond.k
+        #end if
+        #if $gap_cond.gap_type == "gapped"
+            --k_left $gap_cond.k_left
+            --k_right $gap_cond.k_right
+            --min_gap $gap_cond.min_gap
+            --max_gap $gap_cond.max_gap
+        #end if
+       --position_type $position_type
+
+       && cp ${specs.files_path}/specs.yaml yaml_copy &&
+
+      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainMLModel
+
+      && mv ${html_outfile.files_path}/index.html ${html_outfile}
+      && mv ${specs.files_path}/specs.yaml ${specs}
+      && mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      && mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
+      ]]>
+</command>
+    <inputs>
+        <param name="input_dataset" type="data_collection"  label="Input dataset (immune receptors)" help="This field accepts receptor datasets in collection format, as created by Create Dataset tool."/>
+        <param type="text" name="labels" optional="false" label="Which property (“label”) of the receptors would you like to predict?" help="A receptor property to predict could for example be the epitope it binds to. Such properties must be present as receptor sequence metadata. For example, when using data in VDJdb format, the default fields are named ‘epitope’, ‘epitope_gene’ and ‘epitope_species’. One of these labels must be chosen here."/>
+
+        <param type="select" name="ml_methods" label="Which ML methods would you like to include?" help="For each ML method, the optimal hyper parameter settings are determined and the performance of the methods is compared to each other."
+            display="checkboxes" multiple="true">
+          <option value="RandomForestClassifier">Random forest</option>
+          <option value="SimpleLogisticRegression">Logistic regression</option>
+          <option value="SVM">Support Vector Machine</option>
+          <option value="KNN">K-nearest neighbors</option>
+        </param>
+
+        <param type="integer" name="training_percentage" label="Percentage of data that is used for training:" value="70" min="50" max="90" help="This part of the data is used for training the classifier i.e., learning the relevant patterns in the data and determining the optimal hyper parameter settings for the classifier. The remaining data is used to test the performance of the classifier. There is no golden rule that determines the optimal percentage of training data, but typically a value between 60 and 80% is chosen."/>
+        <param type="integer" name="split_count" label="Number of times to repeat the training process with different random splits of data:" value="5" min="0" help="The more often the experiment is repeated, the better the performance of the ML models can be estimated, but the longer it will take for the analysis to complete."/>
+        <conditional name="gap_cond">
+            <param type="select" name="gap_type" label="The immune receptors will be classified based on subsequences found in the CDR3 region. I assume that the signal that determines the receptor label is:" display="radio">
+                <option value="ungapped">A contiguous subsequence of amino acids</option>
+                <option value="gapped">Two subsequences of amino acids, possibly separated by a gap</option>
+            </param>
+            <when value="gapped">
+                <param type="integer" name="k_left" label="Given a gapped signal, the sequence length before the gap is:" value="2" min="0"/>
+                <param type="integer" name="k_right" label="And the sequence length after the gap is:" value="2" min="0"/>
+                <param type="integer" name="min_gap" label="While the minimal gap length is:" value="0" min="0"/>
+                <param type="integer" name="max_gap" label="And the maximal gap length is:" value="5" min="0"/>
+            </when>
+            <when value="ungapped">
+                <param type="integer" name="k" label="Given a contiguous subsequence of amino acids containing a signal, the expected length of this subsequence is:" value="3" min="0"/>
+            </when>
+        </conditional>
+        <param type="boolean" name="position_type" label="If the same subsequence occurs in a different position in two receptors, is this expected to be the same signal? "
+                      truevalue="invariant" falsevalue="positional" checked="true"/>
+    </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="receptor_classification.yaml"/>
+        <data format="zip" name="optimal_model" label="optimal_ml_settings.zip"/>
+        <data format="zip" name="archive" label="Archive: receptor classification"/>
+        <data format="html" name="html_outfile" label="Summary: receptor classification"/>
+    </outputs>
+
+
+    <help><![CDATA[
+        The purpose of this tool is to train machine learning (ML) models to predict a characteristic per immune receptor, such as
+        antigen specificity. One or more ML models are trained to classify receptors based on the information within the CDR3 sequence(s). Finally, the performance
+        of the different methods is compared.
+        Alternatively, if you want to predict a property per immune repertoire, such as disease status, check out the
+        `Train immune repertoire classifiers (simplified interface) <https://galaxy.immuneml.uio.no/root?tool_id=novice_immuneml_interface>`_ tool instead.
+
+        The full documentation can be found `here <https://docs.immuneml.uio.no/galaxy/galaxy_simple_receptors.html>`_.
+
+        **Basic terminology**
+
+        In the context of ML, the characteristics to predict per receptor are called **labels** and the values that these labels can
+        take on are **classes**. One could thus have a label named ‘epitope’ with possible classes ‘binding_gluten’ and ‘not_binding_gluten’.
+        The labels and classes must be present in the receptor metadata.
+
+        When training an ML model, the goal is for the model to learn **signals** within the data which discriminate between the different
+        classes. An ML model that predicts classes is also referred to as a **classifier**. A signal can have a variety of definitions,
+        including the presence of a specific subsequence or conserved positions. Our assumptions about what makes up a ‘signal’
+        determines how we should represent our data to the ML model. This representation is called **encoding**. In this tool, the
+        appropriate encoding is chosen based on the answers to the last two questions.
+
+        .. image:: https://docs.immuneml.uio.no/_images/receptor_classification_overview.png
+            :height: 500
+
+        |
+        |
+
+        **An overview of the components of the immuneML receptor classification tool.**
+
+          ImmuneML reads in receptor data with labels (+ and -), encodes the data, trains user-specified ML models and summarizes
+          the performance statistics per ML method.
+          Encoding: position dependent and invariant encoding are shown. The specificity-associated subsequences are highlighted
+          with color. The different colors represent independent elements of the antigen specificity signal. Each color represents
+          one subsequence, and position dependent subsequences can only have the same color when they occur in the same position,
+          although different colors (i.e., nucleotide or amino acid sequences) may occur in the same position.
+          Training: the training and validation data is used to train ML models and find the optimal hyperparameters through
+          5-fold cross-validation. The test set is left out and is used to obtain a fair estimate of the model performance.
+
+
+        **Encoding**
+
+        Encodings for immune receptor data represent the immune receptor based on the subsequences (e.g., 3 – 5 amino acids long)
+        in the CDR3 regions. The CDR3 regions are divided into overlapping subsequences and the (antigen specificity)
+        signal may be characterized by the presence or absence of certain sequence motifs in the CDR3 region.
+
+        The subsequences may be position dependent or invariant. Position invariant means that if a subsequence, e.g.,
+        ‘EDNA’ occurs in different positions in the CDR3 it will still be considered the same signal. This is not the case for
+        position dependent subsequences, if ‘EDNA’ often occurs in the beginning of the CDR3 in antigen binding receptors,
+        then finding ‘EDNA’ in the end of a CDR3 in a new receptor will be considered unrelated. Positions are determined based
+        on the IMGT numbering scheme.
+
+        Finally, it is possible to introduce gaps in the encoding of subsequences (not shown in the Figure). In this case, a
+        motif is defined by two subsequences separated by a region of varying nucleotide or amino acid length. Thus, the
+        subsequences ‘EDNA’, ‘EDGNA’ and ‘EDGAGAGNA’ may all be considered to be part of the same motif: ‘ED’ followed by ‘NA’
+        with a gap of 0 – 5 amino acids in between.
+
+        Note that in any case, the subsequences that are associated with the ‘positive’ class may still be present in the ‘negative’
+        class, albeit at a lower rate.
+
+        **Training a machine learning model**
+
+        Training an ML model means optimizing the **parameters** for the model with the goal of predicting the correct class of an (unseen) immune receptor.
+        Different ML methods require different procedures for training. In addition to the model parameters there are the **hyperparameters**, these
+        hyperparameters do not directly change the predictions of a model, but they control the learning process (for example: the learning speed).
+
+        The immune receptors are divided into sets with different purposes: the training and validation sets are used for finding the optimal parameters
+        and hyperparameters respectively. The test set is held out, and is only used to estimate the performance of a trained model.
+
+        In this tool, a range of plausible hyperparameters have been predefined for each ML method. The optimal hyperparameters are found by splitting the
+        training/validation data into 5 equal portions, where 4 portions are used to train the ML model (with different hyperparameters) and the remaining
+        portion is used to validate the performance of these hyperparameters settings. This is repeated 5 times such that each portion has been used for
+        validation once. With the best hyperparameters found in the 5 repetitions, a final model is trained using all 5 portions of the data. This procedure
+        is also referred to as 5-fold cross-validation.
+
+        The whole process may be repeated multiple times with different randomly selected repertoires in the test set, to see how robust the performance is.
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - Summary: receptor classification: a HTML page that allows you to browse through all results, including prediction accuracies on
+          the various data splits and plots showing the performance of classifiers and learned parameters.
+
+        - Archive: receptor classification: a .zip file containing the complete output folder as it was produced by immuneML. This folder
+          contains the output of the TrainMLModel instruction including all trained models and their predictions, and report results.
+          Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
+
+        - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding).
+          This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_apply_ml_models.html>`_.
+
+        - receptor_classification.yaml: the YAML specification file that was used by immuneML internally to run the analysis. This file can be
+          downloaded, altered, and run again by immuneML using the  `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
+
+        **More analysis options**
+
+        A limited selection of immuneML options is available through this tool. If you wish to have full control of the analysis, consider using
+        the `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
+        This tool provides other encodings and machine learning methods to choose from, as well as
+        data preprocessing and settings for hyperparameter optimization. The interface of the YAML-based tool expects more independence and knowledge about
+        machine learning from the user.
+
+    ]]>
+    </help>
+
+</tool>
