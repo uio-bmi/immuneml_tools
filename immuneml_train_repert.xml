@@ -55,25 +55,15 @@
       && mv ${html_outfile.files_path}/immuneML_output.zip $archive
       && mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
       ]]>
-    </command>
-        <inputs>
-        <param name="input_dataset" type="data_collection"  label="Input dataset (immune repertoires)" help="This field accepts repertoire datasets in collection format, as created by the 'Create Dataset' tool. With default settings, you will need at least 14 repertoires in your dataset (for example: 7 diseased and 7 healthy) to be able to use this tool. You will need more repertoires if your dataset is imbalanced (many more healthy or many more diseased), or if you decrease the percentage of data that is used for training. "/>
+</command>
+    <inputs>
+        <param name="input_dataset" type="data_collection"  label="Input dataset (immune repertoires)" help="Here you can select a collection containing a repertoire dataset, as produced by the ‘Create dataset’ tool. Please make sure your dataset contains enough repertoires, we recommend using at least 50. The minimum number of repertoires needed to run this tool successfully is 14 (for example: 7 diseased and 7 healthy). More repertoires are needed if your dataset is imbalanced (many more diseased or many more healthy), or if you decrease the percentage of data that is used for training. "/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the repertoires would you like to predict?" help="Repertoire property to predict could for example be a disease status. This property must be present as a label in the repertoire metadata."/>
 
-        <param type="select" name="ml_methods" label="Which ML methods would you like to include?" help="For each ML method, the optimal hyper parameter settings are determined and the performance of the methods is compared to each other."
-            display="checkboxes" multiple="true">
-          <option value="RandomForestClassifier">Random forest</option>
-          <option value="SimpleLogisticRegression">Logistic regression</option>
-          <option value="SVM">Support Vector Machine</option>
-          <option value="KNN">K-nearest neighbors</option>
-        </param>
-
-        <param type="integer" name="training_percentage" label="Percentage of data that is used for training:" value="70" min="50" max="90" help="This part of the data is used for training the classifier i.e., learning the relevant patterns in the data and determining the optimal hyper parameter settings for the classifier. The remaining data is used to test the performance of the classifier. There is no golden rule that determines the optimal percentage of training data, but typically a value between 60 and 80% is chosen."/>
-        <param type="integer" name="split_count" label="Number of times to repeat the training process with different random splits of data:" value="5" min="0" help="The more often the experiment is repeated, the better the performance of the ML models can be estimated, but the longer it will take for the analysis to complete. "/>
         <conditional name="sequence_cond">
-            <param type="select" name="sequence_type" label="I assume that the true class of a repertoire can be identified by the presence/absence of..." display="radio">
-              <option value="complete">Complete receptor sequences</option>
-              <option value="subsequence">Signals within the receptor sequences, e.g., subsequences or CDR3 sequences with mismatches</option>
+            <param type="select" name="sequence_type" label="I assume that the true class of a repertoire (for example: disease status) can be determined based on the presence of..." display="radio" help="See 'Encoding' in the tool description.">
+              <option value="subsequence">Similar (but not identical) CDR3 sequences, or identical subsequences</option>
+              <option value="complete">Complete and identical receptor sequences</option>
             </param>
             <when value="subsequence">
                <param type="boolean" name="position_type" label="If the same CDR3 subsequence occurs in a different position in two receptors, is this expected to be the same signal? "
@@ -99,8 +89,19 @@
             <option value="unique">Only the presence/absence of a clone matters</option>
             <option value="all">The frequency of a clone matters</option>
         </param>
+
+        <param type="select" name="ml_methods" label="Which ML methods would you like to include?" help="For each ML method, the optimal hyper parameter settings are determined and the performance of the methods is compared to each other."
+            display="checkboxes" multiple="true">
+          <option value="RandomForestClassifier">Random forest</option>
+          <option value="SimpleLogisticRegression">Logistic regression</option>
+          <option value="SVM">Support Vector Machine</option>
+          <option value="KNN">K-nearest neighbors</option>
+        </param>
+
+        <param type="integer" name="training_percentage" label="Percentage of data that is used for training + validation (the remainder is used for testing):" value="70" min="50" max="90" help="This part of the data is used for training the classifier i.e., learning the relevant patterns in the data and determining the optimal hyper parameter settings for the classifier. The remaining data is used to test the performance of the classifier. There is no golden rule that determines the optimal percentage of training data, but typically a value between 60 and 80% is chosen."/>
+        <param type="integer" name="split_count" label="Number of times to repeat the training process with different random splits of data:" value="5" min="0" help="This is the number of times we split into random sets for training + validation and testing. The more often the experiment is repeated, the better the performance of the ML models can be estimated, but the longer it will take for the analysis to complete. "/>
+
     </inputs>
- 
     <outputs>
         <data format="txt" name="specs" label="repertoire_classification.yaml"/>
         <data format="zip" name="optimal_model" label="optimal_ml_settings.zip"/>
@@ -129,11 +130,12 @@
 
         |
 
-        When training an ML model, the goal is for the model to learn signals within the data which discriminate between the different classes. An ML model
-        that predicts classes is also referred to as a classifier. A signal can have a variety of definitions, including the presence of specific receptors,
+        When training an ML model, the goal is for the model to learn **signals** within the data which discriminate between the different classes. An ML model
+        that predicts classes is also referred to as a **classifier**. A signal can have a variety of definitions, including the presence of specific receptors,
         groups of similar receptors or short CDR3 subsequences in an immune repertoire. Our assumptions about what makes up a ‘signal’ determines how we
-        should represent our data to the ML model. This representation is called encoding. In this tool, the appropriate encoding is chosen based on the
-        answers to the last two questions in the graphical user interface.
+        should represent our data to the ML model. This representation is called **encoding**. In this tool, the encoding is automatically chosen based on
+        the user's assumptions about the dataset.
+
 
         .. image:: https://docs.immuneml.uio.no/_images/repertoire_classification_overview.png
             :height: 500
@@ -142,15 +144,14 @@
         |
 
         **An overview of the components of the immuneML repertoire classification tool.**
-
-          An overview of the components of the immuneML repertoire classification tool. immuneML reads in repertoire data with labels (+ and -), encodes the
-          data, trains user-specified ML models and summarizes the performance statistics per ML method.
-          Encoding: different forms of encoding are shown; full sequence encoding and position dependent and invariant subsequence encoding.
-          The disease-associated sequences or sub-sequences are highlighted with color. The different colors represent independent elements of the disease signal.
-          Each color represents one (sub)sequence, and position dependent subsequences can only have the same color when they occur in the same position,
-          although different colors (i.e., nucleotide or amino acid sequences) may occur in the same position.
-          Training: the training and validation data is used to train ML models and find the optimal hyperparameters through 5-fold cross-validation.
-          The test set is left out and is used to obtain a fair estimate of the model performance.
+        immuneML reads in repertoire data with labels (+ and -), encodes the
+        data, trains user-specified ML models and summarizes the performance statistics per ML method.
+        Encoding: different forms of encoding are shown; full sequence encoding and position dependent and invariant subsequence encoding.
+        The disease-associated sequences or sub-sequences are highlighted with color. The different colors represent independent elements of the disease signal.
+        Each color represents one (sub)sequence, and position dependent subsequences can only have the same color when they occur in the same position,
+        although different colors (i.e., nucleotide or amino acid sequences) may occur in the same position.
+        Training: the training and validation data is used to train ML models and find the optimal hyperparameters through 5-fold cross-validation.
+        The test set is left out and is used to obtain a fair estimate of the model performance.
 
         **Encoding**
 
@@ -162,6 +163,13 @@
         Other encoding variants are based on shorter subsequences (e.g., 3 – 5 amino acids long, also referred to as k-mers) in the CDR3 regions of an immune repertoire. With this
         encoding, the CDR3 regions are divided into overlapping subsequences and the (disease) signal may be characterized by the presence or absence of
         certain sequence motifs in the CDR3 regions. Here, two similar CDR3 sequences are no longer independent, because they contain many identical subsequences.
+        A graphical representation of how a CDR3 sequence can be divided into k-mers, and how these k-mers can relate to specific positions in a 3D immune receptor
+        (here: antibody) is shown in this figure:
+
+        .. image:: https://docs.immuneml.uio.no/_images/3mer_to_3d.png
+            :height: 250
+
+        |
 
         The subsequences may be position-dependent or invariant. Position invariant means that if a subsequence, e.g., ‘EDNA’ occurs in different positions
         in the CDR3 it will still be considered the same signal. This is not the case for position dependent subsequences, if ‘EDNA’ often occurs in the
@@ -174,10 +182,12 @@
 
         Note that in any case, the (sub)sequences that are associated with the ‘positive’ class may still be present in the ‘negative’ class, albeit at a lower rate.
 
+
+
         **Training a machine learning model**
 
-        Training an ML model means optimizing the parameters for the model with the goal of predicting the correct class of an (unseen) immune repertoire.
-        Different ML methods require different procedures for training. In addition to the model parameters there are the hyperparameters, which
+        Training an ML model means optimizing the **parameters** for the model with the goal of predicting the correct class of an (unseen) immune repertoire.
+        Different ML methods require different procedures for training. In addition to the model parameters there are the **hyperparameters**, which
         do not directly change the predictions of a model, but they control the learning process (for example: the learning speed).
 
         The immune repertoires are divided into sets with different purposes: the training and validation sets are used for finding the optimal parameters
@@ -187,9 +197,11 @@
         training/validation data into 5 equal portions, where 4 portions are used to train the ML model (with different hyperparameters) and the remaining
         portion is used to validate the performance of these hyperparameter settings. This is repeated 5 times such that each portion has been used for
         validation once. With the best hyperparameters found in the 5 repetitions, a final model is trained using all 5 portions of the data. This procedure
-        is also referred to as 5-fold cross-validation.
+        is also referred to as 5-fold cross-validation. Note that this 5-fold cross-validation is separate from the number of times the splitting into
+        training + validation and testing sets is done (see the overview figure).
 
-        The whole process may be repeated multiple times with different randomly selected repertoires in the test set, to see how robust the performance is.
+        Finally, the whole process is repeated one or more times with different randomly selected repertoires in the test set, to see how robust the performance
+        of the ML methods is. The number of times to repeat this splitting into training + validation and test sets is determined in the last question.
 
 
         **Tool output**

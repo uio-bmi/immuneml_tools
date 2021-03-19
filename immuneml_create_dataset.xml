@@ -34,20 +34,18 @@
                 --receptor_chains $interface_cond.dataset_cond.receptor_type
             #end if
         #end if
-         && mv ./specs.yaml yaml_copy &&
+         && mv ./specs.yaml create_dataset.yaml &&
       #else
-        cp $yaml_input yaml_copy &&
+        cp $yaml_input create_dataset.yaml &&
       #end if
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool DatasetGenerationTool &&
+      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationTool &&
       mkdir outputs &&
       cp -r ${html_outfile.files_path}/result ./outputs/result  &&
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       (mv ./outputs/result/repertoires/* ./outputs/result &>/dev/null || :) && rm -rf ./outputs/result/repertoires
-      && mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      && mv ./create_dataset.yaml ${specs}
       ]]>
   </command>
-
-
   <inputs>
       <conditional name="interface_cond">
           <param type="select" name="interface" label="Which interface would you like to use?" display="radio">
@@ -138,7 +136,7 @@
       </conditional>
   </inputs>
     <outputs>
-        <data format="zip" name="archive" label="Archive: dataset generation"/>
+        <data format="txt" name="specs" label="create_dataset.yaml"/>
         <collection name="output" type="list" label="immuneML dataset">
             <discover_datasets pattern="__designation__" directory="outputs/result" />
         </collection>
@@ -147,13 +145,18 @@
 
 
     <help><![CDATA[
+
+        In Galaxy, an immuneML dataset is simply a Galaxy collection containing all relevant files (including an optional metadata file).
         The Create dataset Galaxy tool allows users to import data from various formats and create immuneML datasets in Galaxy.
+        These datasets are in an optimized binary (Pickle) format, which ensures that you can quickly import the dataset into
+        Galaxy tools without having to repeatedly specify the import parameters.
+
         Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface. This can be done either
         by uploading files from your local computer (use the 'Upload file' tool under the 'Get local data' menu), or by fetching
         remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_import_remote_data.html>`_).
 
-        The imported immuneML dataset is stored in a Galaxy collection, which will appear as a history item on the right side of the screen.
-        Such Galaxy collections can later be selected as input to other tools.
+        The imported immuneML dataset is stored in a Galaxy collection, which will appear as a history item on the right side of the screen,
+        and can later be selected as input to other tools.
 
         The tool has a simplified and an advanced interface. The simplified interface is fully button-based, and relies
         on default settings for importing datasets. The advanced interface gives full control over import settings through a YAML
@@ -169,11 +172,11 @@
           (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
           the raw data files.
 
-        - Archive: dataset generation: a .zip file containing the complete output folder as it was produced by immuneML. This folder
-          contains the output of the DatasetExport instruction including raw data files.
-          Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
+        - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
+          This file can be downloaded and altered (for example to export files in AIRR format, or use non-standard import parameters),
+          and run again using the 'Advanced' interface.
 
-        - immuneML dataset: Galaxy collection containing all relevant files for the new dataset.
+        - immuneML dataset: a Galaxy collection containing the immuneML dataset in Pickle format.
 
     ]]>
     </help>
