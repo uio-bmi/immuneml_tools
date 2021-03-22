@@ -1,5 +1,5 @@
 <macros>
-  <token name="@VERSION@">1.1.4</token>
+  <token name="@VERSION@">1.2.0</token>
   <token name="@GET_IMMUNEML@">##Do nothing##</token>
     <xml name="requirements">
         <requirements>
