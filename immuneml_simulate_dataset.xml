@@ -38,7 +38,7 @@
 
         - Labels, which can be used as a target when training ML models
 
-        Note that since these labels are randomly assigned, they do not bear any meaning and it is not possible train a ML model with high classification accuracy on this data.
+        Note that since these labels are randomly assigned, they do not bear any meaning and it is not possible to train a ML model with high classification accuracy on this data.
         Meaningful labels can be added using the `Simulate immune events into existing repertoire/receptor dataset <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_simulation>`_ Galaxy tool.
 
         For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate an AIRR dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_simulate_dataset.html>`_.
@@ -47,7 +47,7 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - ImmuneML data: dataset generation: contains a summary with the generated dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
+        - ImmuneML data: dataset simulation: contains a summary with the generated dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
           (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
           the raw data files.
 

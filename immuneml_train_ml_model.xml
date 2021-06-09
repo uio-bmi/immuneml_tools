@@ -30,7 +30,7 @@
   <inputs>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
       <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
-      <param name="iml_input" type="data" format="iml_dataset" label="Dataset input" optional="true" help="This field accepts datasets in iml_dataset format, as created by Create Dataset tool."/>
+      <param name="iml_input" type="data" format="iml_dataset" label="Dataset input" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
   </inputs>
     <outputs>
         <data format="zip" name="optimal_model" label="optimal_ml_settings.zip"/>
