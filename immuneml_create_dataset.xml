@@ -1,4 +1,4 @@
-<tool id="immune_ml_dataset" name="Create dataset" version="@VERSION@.0">
+<tool id="immune_ml_dataset" name="Create dataset" version="@VERSION@.1">
   <description></description>
   <macros>
         <import>prod_macros.xml</import>
@@ -38,12 +38,12 @@
       #else
         cp $yaml_input create_dataset.yaml &&
       #end if
+
       immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationTool &&
-      mkdir outputs &&
-      cp -r ${html_outfile.files_path}/result ./outputs/result  &&
+
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      (mv ./outputs/result/repertoires/* ./outputs/result &>/dev/null || :) && rm -rf ./outputs/result/repertoires
-      && mv ./create_dataset.yaml ${specs}
+      mv ./create_dataset.yaml ${specs}
+
       ]]>
   </command>
   <inputs>
@@ -137,10 +137,7 @@
   </inputs>
     <outputs>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
-        <collection name="output" type="list" label="immuneML dataset">
-            <discover_datasets pattern="__designation__" directory="outputs/result" />
-        </collection>
-        <data format="html" name="html_outfile" label="Summary: dataset generation"/>
+        <data format="iml_dataset" name="html_outfile" label="ImmuneML data: dataset generation"/>
     </outputs>
 
 
@@ -168,15 +165,13 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - Summary: dataset generation: a HTML page describing general characteristics of the dataset, including the name of the dataset
+        - ImmuneML data: dataset generation: contains a summary with the created dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
           (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
           the raw data files.
 
         - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
           This file can be downloaded and altered (for example to export files in AIRR format, or use non-standard import parameters),
           and run again using the 'Advanced' interface.
-
-        - immuneML dataset: a Galaxy collection containing the immuneML dataset in Pickle format.
 
     ]]>
     </help>

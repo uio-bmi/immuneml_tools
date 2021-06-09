@@ -1,4 +1,4 @@
-<tool id="immuneml_simulate_dataset" name="Simulate a synthetic immune receptor or repertoire dataset" version="@VERSION@.0">
+<tool id="immuneml_simulate_dataset" name="Simulate a synthetic immune receptor or repertoire dataset" version="@VERSION@.1">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>
@@ -7,12 +7,11 @@
   <command><![CDATA[
 
       cp "$yaml_input" yaml_copy &&
-      immune-ml ./yaml_copy ${html_outfile.files_path}
-      --tool DataSimulationTool &&
+      immune-ml ./yaml_copy ${html_outfile.files_path} --tool DataSimulationTool &&
 
-      mkdir outputs &&
-      cp -r ${html_outfile.files_path}/result ./outputs/result && (mv ./outputs/result/repertoires/* ./outputs/result &>/dev/null || :) && rm -rf ./outputs/result/repertoires
-      && mv ${html_outfile.files_path}/index.html ${html_outfile} && mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      mv ${html_outfile.files_path}/index.html ${html_outfile} && 
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+
       ]]>
   </command>
   <inputs>
@@ -20,10 +19,7 @@
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: dataset simulation"/>
-        <collection name="output" type="list" label="Simulated immuneML dataset">
-            <discover_datasets pattern="__designation__" directory="outputs/result" />
-        </collection>
-        <data format="html" name="html_outfile" label="Summary: dataset simulation"/>
+        <data format="iml_dataset" name="html_outfile" label="ImmuneML data: dataset simulation"/>
     </outputs>
 
 
@@ -51,7 +47,7 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - Summary: dataset simulation: a HTML page describing general characteristics of the dataset, including the name of the dataset
+        - ImmuneML data: dataset generation: contains a summary with the generated dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
           (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
           the raw data files.
 
@@ -59,7 +55,6 @@
           contains the output of the DatasetExport instruction including raw data files.
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
-        - Simulated immuneML dataset: Galaxy collection containing all relevant files for the new dataset.
 
     ]]>
   </help>

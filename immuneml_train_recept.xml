@@ -1,4 +1,4 @@
-<tool id="immuneml_train_classifiers" name="Train immune receptor classifiers (simplified interface)" version="@VERSION@.0">
+<tool id="immuneml_train_classifiers" name="Train immune receptor classifiers (simplified interface)" version="@VERSION@.1">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>
@@ -6,11 +6,11 @@
     <expand macro="requirements" />
     <command><![CDATA[
 
-      #if $input_dataset
-          #for $f in $input_dataset
-              cp $f "$f.name"  &&
-          #end for
-      #end if
+        #if $iml_input
+           cp -r ${iml_input.extra_files_path}/result/* . &&
+           (mv repertoires/* . &>/dev/null || : ) &&
+           rm -rf repertoires &&
+        #end if
 
         python '$__tool_directory__/build_yaml_from_arguments.py' --output_path $specs.files_path
         #if $labels
@@ -50,7 +50,7 @@
       ]]>
 </command>
     <inputs>
-        <param name="input_dataset" type="data_collection"  label="Input dataset (immune receptors)" help="This field accepts receptor datasets in collection format, as created by Create Dataset tool."/>
+        <param name="iml_input" type="data" format="iml_dataset" label="Input dataset (immune receptors)" help="This field accepts receptor datasets in iml_dataset format, as created by Create Dataset tool."/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the receptors would you like to predict?" help="A receptor property to predict could for example be the epitope it binds to. Such properties must be present as receptor sequence metadata. For example, when using data in VDJdb format, the default fields are named ‘epitope’, ‘epitope_gene’ and ‘epitope_species’. One of these labels must be chosen here."/>
 
         <conditional name="gap_cond">
