@@ -19,7 +19,7 @@
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: dataset simulation"/>
-        <data format="iml_dataset" name="html_outfile" label="ImmuneML data: dataset simulation"/>
+        <data format="iml_dataset" name="html_outfile" label="ImmuneML dataset (simulated sequences)"/>
     </outputs>
 
 
@@ -47,9 +47,8 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - ImmuneML data: dataset simulation: contains a summary with the generated dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
-          (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
-          the raw data files.
+        - ImmuneML dataset (simulated sequences): a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
 
         - Archive: dataset simulation: a .zip file containing the complete output folder as it was produced by immuneML. This folder
           contains the output of the DatasetExport instruction including raw data files.

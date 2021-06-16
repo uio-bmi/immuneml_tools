@@ -131,13 +131,13 @@
           </when>
           <when value="advanced">
               <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-              <param name="data_input" type="data" multiple="true" label="Data and metadata files" optional="true" help="This field should include individual repertoire or receptor files, or iReceptor zip files, and optionally a metadata file. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted in blue or gray."/>
+              <param name="data_input" type="data" multiple="true" label="Data and metadata files" optional="true" help="This field should include individual repertoire or receptor files, or iReceptor zip files, and optionally a metadata file. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted."/>
           </when>
       </conditional>
   </inputs>
     <outputs>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
-        <data format="iml_dataset" name="html_outfile" label="ImmuneML data: dataset generation"/>
+        <data format="iml_dataset" name="html_outfile" label="ImmuneML dataset"/>
     </outputs>
 
 
@@ -165,9 +165,8 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - ImmuneML data: dataset generation: contains a summary with the created dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
-          (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
-          the raw data files.
+        - ImmuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
 
         - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
           This file can be downloaded and altered (for example to export files in AIRR format, or use non-standard import parameters),

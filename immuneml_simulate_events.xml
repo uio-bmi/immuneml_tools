@@ -22,11 +22,11 @@
   </command>
   <inputs>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-      <param name="iml_input" type="data" format="iml_dataset" label="Dataset input" optional="true" help="This field accepts datasets in iml_dataset format, as created by Create Dataset tool."/>
+      <param name="iml_input" type="data" format="iml_dataset" label="Dataset input" optional="true" help="This field accepts datasets in iml_dataset format, as created by the Create Dataset tool."/>
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: immune signal simulation"/>
-        <data format="iml_dataset" name="html_outfile" label="ImmuneML data: immune signal simulation"/>
+        <data format="iml_dataset" name="html_outfile" label="ImmuneML dataset (simulated immune signals)"/>
     </outputs>
 
 
@@ -45,9 +45,8 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - ImmuneML data: immune signal simulation: contains a summary with the new dataset attached. The summary is an HTML page describing general characteristics of the dataset, including the name of the dataset
-          (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and the details of the
-          simulated immune signals.
+        - ImmuneML dataset (simulated immune signals): a repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
 
         - Archive: immune signal simulation: a .zip file containing the complete output folder as it was produced by immuneML. This folder
           contains the output of the Simulation instruction including all raw data files.
