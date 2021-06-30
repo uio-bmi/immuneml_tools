@@ -3,7 +3,7 @@ Galaxy tool wrappers for immuneML.
 https://immuneml.uio.no/
 
 ## Installation:
-The tools can be installed from the main Galaxy toolshed. You can also install them offline by editing Galaxy config files in the usual way.
+The tools can be installed from a Galaxy toolshed. You can also install them offline by editing Galaxy config files in the usual way.
 
 ### New datatype `iml_dataset`
 No matter how you install the tools, you will need to define a new datatype, which is done as follows:
