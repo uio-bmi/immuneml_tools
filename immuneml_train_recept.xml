@@ -12,7 +12,7 @@
            rm -rf repertoires &&
         #end if
 
-        python '$__tool_directory__/build_yaml_from_arguments.py' --output_path $specs.files_path
+        python '$__tool_directory__/build_yaml_from_arguments_wrapper.py' --output_path $specs.files_path
         #if $labels
             --labels "$labels"
         #end if

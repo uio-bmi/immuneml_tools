@@ -14,7 +14,7 @@
       #end for
 
       #if $interface_cond.interface == "simple"
-        python3 '$__tool_directory__/build_dataset_yaml.py'
+        python3 '$__tool_directory__/build_dataset_yaml_wrapper.py'
         --output_path . --file_name specs.yaml
         #if $interface_cond.dataset_cond.dataset_type == "repertoire"
             --is_repertoire True
