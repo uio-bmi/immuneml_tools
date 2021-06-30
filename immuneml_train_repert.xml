@@ -1,4 +1,4 @@
-<tool id="novice_immuneml_interface" name="Train immune repertoire classifiers (simplified interface)" version="@VERSION@.1">
+<tool id="novice_immuneml_interface" name="Train immune repertoire classifiers (simplified interface)" version="@VERSION@.0">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>

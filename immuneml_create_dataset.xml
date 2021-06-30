@@ -1,4 +1,4 @@
-<tool id="immune_ml_dataset" name="Create dataset" version="@VERSION@.1">
+<tool id="immune_ml_dataset" name="Create dataset" version="@VERSION@.0">
   <description></description>
   <macros>
         <import>prod_macros.xml</import>

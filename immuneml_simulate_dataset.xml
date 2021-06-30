@@ -1,4 +1,4 @@
-<tool id="immuneml_simulate_dataset" name="Simulate a synthetic immune receptor or repertoire dataset" version="@VERSION@.1">
+<tool id="immuneml_simulate_dataset" name="Simulate a synthetic immune receptor or repertoire dataset" version="@VERSION@.0">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>

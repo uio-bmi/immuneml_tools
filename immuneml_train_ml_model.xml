@@ -1,4 +1,4 @@
-<tool id="immuneml_train_ml_model" name="Train machine learning models" version="@VERSION@.1">
+<tool id="immuneml_train_ml_model" name="Train machine learning models" version="@VERSION@.0">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>

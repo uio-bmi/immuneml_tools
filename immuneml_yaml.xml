@@ -1,4 +1,4 @@
-<tool id="immune_ml" name="Run immuneML with any YAML specification" version="@VERSION@.1">
+<tool id="immune_ml" name="Run immuneML with any YAML specification" version="@VERSION@.0">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>
