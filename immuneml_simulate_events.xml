@@ -22,7 +22,7 @@
   </command>
   <inputs>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-      <param name="iml_input" type="data" format="immuneml_receptors" label="Dataset input" optional="true" help="This field accepts datasets in iml_dataset format, as created by the Create Dataset tool."/>
+      <param name="iml_input" type="data" format="immuneml_receptors" label="Dataset input" optional="true" help="This field accepts datasets ithe ImmuneML format, as created by the Create Dataset tool."/>
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: immune signal simulation"/>
