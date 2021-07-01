@@ -50,7 +50,7 @@
       ]]>
 </command>
     <inputs>
-        <param name="iml_input" type="data" format="iml_dataset" label="Input dataset (immune receptors)" help="This field accepts receptor datasets in the ImmuneML dataset format, as created by the Create Dataset tool."/>
+        <param name="iml_input" type="data" format="immuneml_receptors" label="Input dataset (immune receptors)" help="This field accepts receptor datasets in the ImmuneML dataset format, as created by the Create Dataset tool."/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the receptors would you like to predict?" help="A receptor property to predict could for example be the epitope it binds to. Such properties must be present as receptor sequence metadata. For example, when using data in VDJdb format, the default fields are named ‘epitope’, ‘epitope_gene’ and ‘epitope_species’. One of these labels must be chosen here."/>
 
         <conditional name="gap_cond">

@@ -19,7 +19,7 @@
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: dataset simulation"/>
-        <data format="iml_dataset" name="html_outfile" label="ImmuneML dataset (simulated sequences)"/>
+        <data format="immuneml_receptors" name="html_outfile" label="ImmuneML dataset (simulated sequences)"/>
     </outputs>
 
 
