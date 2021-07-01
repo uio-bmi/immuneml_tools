@@ -14,7 +14,7 @@
       #end for
 
       #if $interface_cond.interface == "simple"
-        python3 '$__tool_directory__/build_dataset_yaml.py'
+        python3 '$__tool_directory__/build_dataset_yaml_wrapper.py'
         --output_path . --file_name specs.yaml
         #if $interface_cond.dataset_cond.dataset_type == "repertoire"
             --is_repertoire True
@@ -38,12 +38,12 @@
       #else
         cp $yaml_input create_dataset.yaml &&
       #end if
+
       immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationTool &&
-      mkdir outputs &&
-      cp -r ${html_outfile.files_path}/result ./outputs/result  &&
+
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      (mv ./outputs/result/repertoires/* ./outputs/result &>/dev/null || :) && rm -rf ./outputs/result/repertoires
-      && mv ./create_dataset.yaml ${specs}
+      mv ./create_dataset.yaml ${specs}
+
       ]]>
   </command>
   <inputs>
@@ -131,16 +131,13 @@
           </when>
           <when value="advanced">
               <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-              <param name="data_input" type="data" multiple="true" label="Data and metadata files" optional="true" help="This field should include individual repertoire or receptor files, or iReceptor zip files, and optionally a metadata file. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted in blue or gray."/>
+              <param name="data_input" type="data" multiple="true" label="Data and metadata files" optional="true" help="This field should include individual repertoire or receptor files, or iReceptor zip files, and optionally a metadata file. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted."/>
           </when>
       </conditional>
   </inputs>
     <outputs>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
-        <collection name="output" type="list" label="immuneML dataset">
-            <discover_datasets pattern="__designation__" directory="outputs/result" />
-        </collection>
-        <data format="html" name="html_outfile" label="Summary: dataset generation"/>
+        <data format="immuneml_receptors" name="html_outfile" label="ImmuneML dataset"/>
     </outputs>
 
 
@@ -168,15 +165,12 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - Summary: dataset generation: a HTML page describing general characteristics of the dataset, including the name of the dataset
-          (this name should be specified when importing the dataset later in immuneML), the dataset type and size, and a link to download
-          the raw data files.
+        - ImmuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
 
         - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
           This file can be downloaded and altered (for example to export files in AIRR format, or use non-standard import parameters),
           and run again using the 'Advanced' interface.
-
-        - immuneML dataset: a Galaxy collection containing the immuneML dataset in Pickle format.
 
     ]]>
     </help>
