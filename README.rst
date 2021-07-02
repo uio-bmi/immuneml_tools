@@ -1,3 +1,5 @@
+The tools rely on immuneML version 2.0.1 or newer.
+
 Installation
 ============
 You will need to define a new datatype ``immuneml_receptors``, which is done as follows:
@@ -12,6 +14,6 @@ You will need to define a new datatype ``immuneml_receptors``, which is done as 
 ``<datatype extension="immuneml_receptors" type="galaxy.datatypes.text:Html" subclass="True"/>``
 The line has to be inside ``<registration>`` along with the other datatypes.
 
-The immuneML conda package
-==========================
-Galaxy will need to install the immuneML conda package. This conda installation typically takes several minutes. 
+The immuneML package
+====================
+Conda installation of immuneML typically takes several minutes. There is general information about Galaxy dependency resolution here: https://docs.galaxyproject.org/en/release_20.05/admin/conda_faq.html 
