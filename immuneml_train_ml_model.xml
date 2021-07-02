@@ -5,11 +5,13 @@
     </macros>
     <expand macro="requirements" />
   <command><![CDATA[
-      #if $collection_input
-          #for $col in $collection_input
-              cp $col "$col.name"  &&
-          #end for
+
+      #if $iml_input
+         cp -r ${iml_input.extra_files_path}/result/* . &&
+	 (mv repertoires/* . &>/dev/null || :) &&
+	 rm -rf repertoires &&
       #end if
+
       #set $input_orig_names = []
       #if $data_input
           #for $input in $data_input
@@ -28,7 +30,7 @@
   <inputs>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
       <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
-      <param name="collection_input" type="data_collection"  label="Dataset as a collection" optional="true" help="This field accepts datasets in collection format, as created by Create Dataset tool."/>
+      <param name="iml_input" type="data" format="immuneml_receptors" label="Dataset input" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
   </inputs>
     <outputs>
         <data format="zip" name="optimal_model" label="optimal_ml_settings.zip"/>
