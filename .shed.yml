@@ -1,5 +1,4 @@
 categories: 
-- "Testing"
-description: immuneML tools for Galaxy
+- "Machine Learning"
 name: immuneml_tools
-owner: knutwa2
+owner: immuneml
