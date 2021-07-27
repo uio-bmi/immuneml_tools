@@ -41,7 +41,7 @@
         Note that since these labels are randomly assigned, they do not bear any meaning and it is not possible to train a ML model with high classification accuracy on this data.
         Meaningful labels can be added using the `Simulate immune events into existing repertoire/receptor dataset <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_simulation>`_ Galaxy tool.
 
-        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate an AIRR dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_simulate_dataset.html>`_.
+        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate an AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_dataset.html>`_.
 
         **Tool output**
 

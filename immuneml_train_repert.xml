@@ -117,7 +117,7 @@
         Alternatively, if you want to predict a property per immune receptor, such as antigen specificity, check out the
         `Train immune receptor classifiers (simplified interface) <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_classifiers>`_ tool instead.
 
-        The full documentation can be found `here <https://docs.immuneml.uio.no/galaxy/galaxy_simple_repertoires.html>`_.
+        The full documentation can be found `here <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simple_repertoires.html>`_.
 
         **Basic terminology**
 
@@ -125,7 +125,7 @@
         One could thus have a label named ‘CMV_status’ with possible classes ‘positive’ and ‘negative’. The labels and classes must be present in the metadata
         file, in columns where the header and values correspond to the label and classes respectively.
 
-        .. image:: https://docs.immuneml.uio.no/_images/metadata_repertoire_classification.png
+        .. image:: https://docs.immuneml.uio.no/latest/_images/metadata_repertoire_classification.png
             :height: 150
 
         |
@@ -137,7 +137,7 @@
         the user's assumptions about the dataset.
 
 
-        .. image:: https://docs.immuneml.uio.no/_images/repertoire_classification_overview.png
+        .. image:: https://docs.immuneml.uio.no/latest/_images/repertoire_classification_overview.png
             :height: 500
 
         |
@@ -166,7 +166,7 @@
         A graphical representation of how a CDR3 sequence can be divided into k-mers, and how these k-mers can relate to specific positions in a 3D immune receptor
         (here: antibody) is shown in this figure:
 
-        .. image:: https://docs.immuneml.uio.no/_images/3mer_to_3d.png
+        .. image:: https://docs.immuneml.uio.no/latest/_images/3mer_to_3d.png
             :height: 250
 
         |
@@ -216,7 +216,7 @@
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
         - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding).
-          This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_apply_ml_models.html>`_.
+          This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_apply_ml_models.html>`_.
 
         - repertoire_classification.yaml: the YAML specification file that was used by immuneML internally to run the analysis. This file can be
           downloaded, altered, and run again by immuneML using the  `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.

@@ -49,7 +49,7 @@
       see `Train immune receptor classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_classifiers>`_ and
       `Train immune repertoire classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=novice_immuneml_interface>`_.
 
-      For more details on how to train ML models in Galaxy, see `the documentation <https://docs.immuneml.uio.no/galaxy/galaxy_train_ml_models.html>`_.
+      For more details on how to train ML models in Galaxy, see `the documentation <https://docs.immuneml.uio.no/latest/galaxy/galaxy_train_ml_models.html>`_.
 
       **Tool output**
 
@@ -63,7 +63,7 @@
         Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
       - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding, and
-        optionally preprocessing steps). This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_apply_ml_models.html>`_.
+        optionally preprocessing steps). This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_apply_ml_models.html>`_.
 
     ]]>
 

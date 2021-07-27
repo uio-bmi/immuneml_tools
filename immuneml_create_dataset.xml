@@ -150,7 +150,7 @@
 
         Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface. This can be done either
         by uploading files from your local computer (use the 'Upload file' tool under the 'Get local data' menu), or by fetching
-        remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_import_remote_data.html>`_).
+        remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_import_remote_data.html>`_).
 
         The imported immuneML dataset is stored in a Galaxy collection, which will appear as a history item on the right side of the screen,
         and can later be selected as input to other tools.
@@ -159,7 +159,7 @@
         on default settings for importing datasets. The advanced interface gives full control over import settings through a YAML
         specification. In most cases, the simplified interface will suffice.
 
-        For the exhaustive documentation of this tool and more information about immuneML datasets, see the tutorial `How to make an immuneML dataset in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_dataset.html>`_.
+        For the exhaustive documentation of this tool and more information about immuneML datasets, see the tutorial `How to make an immuneML dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_dataset.html>`_.
 
         **Tool output**
 

@@ -51,10 +51,10 @@
         `applying <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_apply_ml_model>`_ ML models instead of this tool.
         These other tools are able to export the relevant output files to Galaxy history elements.
 
-        However, when you want to run the `ExploratoryAnalysis <https://docs.immuneml.uio.no/specification.html#exploratoryanalysis>`_ instruction,
+        However, when you want to run the `ExploratoryAnalysis <https://docs.immuneml.uio.no/latest/specification.html#exploratoryanalysis>`_ instruction,
         or other analyses that do not have a corresponding Galaxy tool, this generic tool can be used.
 
-        For the exhaustive documentation of this tool and an example YAML specification for exploratory analysis, see the tutorial `How to run any AIRR ML analysis in Galaxy <https://docs.immuneml.uio.no/galaxy/galaxy_general_yaml.html>`_.
+        For the exhaustive documentation of this tool and an example YAML specification for exploratory analysis, see the tutorial `How to run any AIRR ML analysis in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_general_yaml.html>`_.
 
 
         **Tool output**
