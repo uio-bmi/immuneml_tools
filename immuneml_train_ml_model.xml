@@ -46,8 +46,8 @@
       which include ML models and their parameters, encodings and preprocessing steps. Nested cross-validation is used to identify the optimal combination of ML settings.
 
       This is a YAML-based Galaxy tool, if you prefer a button-based interface that assumes less ML knowledge,
-      see `Train immune receptor classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_classifiers>`_ and
-      `Train immune repertoire classifiers (easy interface) <https://galaxy.immuneml.uio.no/root?tool_id=novice_immuneml_interface>`_.
+      see `Train immune receptor classifiers (easy interface) <root?tool_id=immuneml_train_classifiers>`_ and
+      `Train immune repertoire classifiers (easy interface) <root?tool_id=novice_immuneml_interface>`_.
 
       For more details on how to train ML models in Galaxy, see `the documentation <https://docs.immuneml.uio.no/latest/galaxy/galaxy_train_ml_models.html>`_.
 

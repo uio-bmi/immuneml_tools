@@ -44,11 +44,10 @@
         This Galaxy tool can be used to run any possible YAML-based immuneML analysis in Galaxy.
 
         It is typically recommended to use the analysis-specific Galaxy tools for
-        `creating datasets <https://galaxy.immuneml.uio.no/root?tool_id=immune_ml_dataset>`_,
-        `simulating synthetic data <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_simulate_dataset>`_,
-        `implanting synthetic immune signals <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_simulation>`_ or
-        `training <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ and
-        `applying <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_apply_ml_model>`_ ML models instead of this tool.
+        `creating datasets <root?tool_id=immune_ml_dataset>`_,
+        `simulating synthetic data <root?tool_id=immuneml_simulate_dataset>`_,
+        `implanting synthetic immune signals <root?tool_id=immuneml_simulation>`_ or
+        `training <root?tool_id=immuneml_train_ml_model>`_ ML models instead of this tool.
         These other tools are able to export the relevant output files to Galaxy history elements.
 
         However, when you want to run the `ExploratoryAnalysis <https://docs.immuneml.uio.no/latest/specification.html#exploratoryanalysis>`_ instruction,

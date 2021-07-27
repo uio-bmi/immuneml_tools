@@ -37,7 +37,7 @@
         Any type of repertoire dataset (experimental or simulated) can be used as a starting point for an immune event simulation, as long as it contains amino acid sequences.
 
         If you instead want to simulate a synthetic dataset from scratch, start with the
-        tool `Simulate a synthetic immune receptor or repertoire dataset <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_simulate_dataset>`_.
+        tool `Simulate a synthetic immune receptor or repertoire dataset <root?tool_id=immuneml_simulate_dataset>`_.
 
         For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate immune events into an existing AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_signals.html>`_.
 

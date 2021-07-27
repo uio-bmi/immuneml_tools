@@ -115,7 +115,7 @@
         a disease status. One or more ML models are trained to classify repertoires based on the information within the sets of CDR3 sequences. Finally, the performance
         of the different methods is compared.
         Alternatively, if you want to predict a property per immune receptor, such as antigen specificity, check out the
-        `Train immune receptor classifiers (simplified interface) <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_classifiers>`_ tool instead.
+        `Train immune receptor classifiers (simplified interface) <root?tool_id=immuneml_train_classifiers>`_ tool instead.
 
         The full documentation can be found `here <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simple_repertoires.html>`_.
 
@@ -219,12 +219,12 @@
           This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_apply_ml_models.html>`_.
 
         - repertoire_classification.yaml: the YAML specification file that was used by immuneML internally to run the analysis. This file can be
-          downloaded, altered, and run again by immuneML using the  `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
+          downloaded, altered, and run again by immuneML using the  `Train machine learning models <root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
 
         **More analysis options**
 
         A limited selection of immuneML options is available through this tool. If you wish to have full control of the analysis, consider using
-        the `Train machine learning models <https://galaxy.immuneml.uio.no/root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
+        the `Train machine learning models <root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
         This tool provides other encodings and machine learning methods to choose from, as well as
         data preprocessing and settings for hyperparameter optimization. The interface of the YAML-based tool expects more independence and knowledge about
         machine learning from the user.
