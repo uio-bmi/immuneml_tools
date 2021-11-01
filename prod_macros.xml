@@ -1,5 +1,5 @@
 <macros>
-  <token name="@VERSION@">2.0.5</token>
+  <token name="@VERSION@">2.0.6</token>
     <xml name="requirements">
         <requirements>
           <requirement type="package" version="@VERSION@">immuneML</requirement>
