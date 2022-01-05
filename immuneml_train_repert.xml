@@ -57,7 +57,7 @@
       ]]>
 </command>
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors"  label="Input dataset (immune repertoires)" help="Here you can select an ImmuneML dataset containing a repertoire dataset, as produced by the ‘Create dataset’ tool. Please make sure your dataset contains enough repertoires, we recommend using at least 50. The minimum number of repertoires needed to run this tool successfully is 14 (for example: 7 diseased and 7 healthy). More repertoires are needed if your dataset is imbalanced (many more diseased or many more healthy), or if you decrease the percentage of data that is used for training. "/>
+        <param name="iml_input" type="data" format="immuneml_receptors"  label="immuneML dataset (immune repertoires)" help="Here you can select an ImmuneML dataset containing a repertoire dataset, as produced by the ‘Create dataset’ tool. Please make sure your dataset contains enough repertoires, we recommend using at least 50. The minimum number of repertoires needed to run this tool successfully is 14 (for example: 7 diseased and 7 healthy). More repertoires are needed if your dataset is imbalanced (many more diseased or many more healthy), or if you decrease the percentage of data that is used for training. "/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the repertoires would you like to predict?" help="Repertoire property to predict could for example be a disease status. This property must be present as a label in the repertoire metadata."/>
 
         <conditional name="sequence_cond">
