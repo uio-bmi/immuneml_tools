@@ -186,8 +186,7 @@
           contains the output of the TrainMLModel instruction including all trained models and their predictions, and report results.
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
-        - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding).
-          This .zip file can subsequently be used as an input when `applying previously trained ML models to a new AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_apply_ml_models.html>`_.
+        - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding). This .zip file can subsequently be used as an input when applying previously trained ML models to a new dataset. Currently, this can only be done locally using the command-line interface.
 
         - receptor_classification.yaml: the YAML specification file that was used by immuneML internally to run the analysis. This file can be
           downloaded, altered, and run again by immuneML using the  `Train machine learning models <root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
