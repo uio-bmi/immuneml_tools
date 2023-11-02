@@ -1,8 +1,8 @@
 <macros>
-  <token name="@VERSION@">2.2.0</token>
+    <token name="@VERSION@">3.x</token>
     <xml name="requirements">
         <requirements>
-          <requirement type="package" version="@VERSION@">immuneML</requirement>
+            <requirement type="package" version="@VERSION@">immuneML</requirement>
             <yield/>
         </requirements>
     </xml>
