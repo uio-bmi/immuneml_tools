@@ -1,223 +1,181 @@
-<tool id="immune_ml_dataset" name="Create dataset" version="@VERSION@.0">
-  <description></description>
-  <macros>
-        <import>prod_macros.xml</import>
-  </macros>
-  <expand macro="requirements" />
+<tool id="iml_dataset_overview" name="Create dataset with reports" version="0.1">
   <command><![CDATA[
-      #set $input_orig_names = []
-      #for $input in $data_input
-         #if $input
+      source /storage/iml_env/bin/activate &&
+
+      #if $import_cond.import_type == "history"
+        #if $import_cond.iml_input
+           cp -r ${import_cond.iml_input.extra_files_path}/result/* . &&
+	   (mv repertoires/* . &>/dev/null || :) &&
+	   rm -rf repertoires &&
+        #end if
+      #else if $import_cond.import_type == "files"
+        #set $input_orig_names = []
+        #for $input in $import_cond.data_input
+          #if $input
             #set input_orig_names += ["./"+str($input.element_identifier)]
             ([ -e ./"$input.element_identifier" ] && echo "File '$input.element_identifier' already exists in the input folder, skipping." || ln -s $input "$input.element_identifier") &&
-         #end if
-      #end for
-
-      if $import_cond == "history"
-          #if $history.iml_input
-             cp -r ${history.iml_input.extra_files_path}/result/* . &&
-    	 (mv repertoires/* . &>/dev/null || :) &&
-    	 rm -rf repertoires &&
           #end if
+        #end for
       #end if
 
       python3 '$__tool_directory__/build_dataset_overview_yaml_wrapper.py'
       --output_path . --file_name specs.yaml
-      if $import_cond == "files"
-          #if $import_cond.dataset_cond.dataset_type == "repertoire"
-              --is_repertoire True
-              --format "$import_cond.dataset_cond.metadata_cond.data_format"
-              #if $import_cond.dataset_cond.metadata_cond.data_format != "IReceptor"
-                  --metadata_file "$import_cond.dataset_cond.metadata_cond.metadata_input" &&
-                  cp $import_cond.dataset_cond.metadata_cond.metadata_input "$import_cond.dataset_cond.metadata_cond.metadata_input.element_identifier"
-              #end if
-          #else
-              --is_repertoire False
-              --format "$import_cond.dataset_cond.data_format"
-              --metadata_columns "$import_cond.dataset_cond.metadata_columns"
-              #if $import_cond.dataset_cond.dataset_type == "sequence"
-                  --paired False
-              #elif $import_cond.dataset_cond.dataset_type == "receptor"
-                  --paired True
-                  --receptor_chains $import_cond.dataset_cond.receptor_type
-              #end if
-          #end if
+      #for $report_name in $reports:
+        --"$report_name" True
+      #end for
+      #if $import_cond.import_type == "files"
+        #if $import_cond.dataset_cond.dataset_type == "repertoire"
+            --is_repertoire True
+            --format "$import_cond.dataset_cond.metadata_cond.data_format"
+            #if $import_cond.dataset_cond.metadata_cond.data_format != "IReceptor"
+                --metadata_file "$import_cond.dataset_cond.metadata_cond.metadata_input" &&
+                cp $import_cond.dataset_cond.metadata_cond.metadata_input "$import_cond.dataset_cond.metadata_cond.metadata_input.element_identifier"
+            #end if
+        #else
+            --is_repertoire False
+            --format "$import_cond.dataset_cond.data_format"
+            --metadata_columns "$import_cond.dataset_cond.metadata_columns"
+            #if $import_cond.dataset_cond.dataset_type == "sequence"
+                --paired False
+            #elif $import_cond.dataset_cond.dataset_type == "receptor"
+                --paired True
+                --receptor_chains $import_cond.dataset_cond.receptor_type
+            #end if
+        #end if
       #else
           --existing_dataset True
       #end if
-      #if $reports.sequence_length_report
-          --sequence_length_report True
-      #end if
-      #if $reports.amino_acid_report
-          --amino_acid_report True
-      #end if
-      #if $reports.vj_gene_report
-          --vj_gene_report True
-      #end if
-       && mv ./specs.yaml create_dataset_overview.yaml &&
 
 
-      immune-ml ./create_dataset_overview.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool &&
+      && mv ./specs.yaml create_dataset.yaml &&
+      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ./create_dataset_overview.yaml ${specs}
-
+      mv ./create_dataset.yaml ${specs} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
   </command>
-    <inputs>
-        <conditional name="import_cond">
-            <param type="select" name="import_type" label="How would you like to import your dataset?" display="radio"
-                   help="This tool can be used to either import a new dataset from files, or select an existing dataset
+  <inputs>
+      <conditional name="import_cond">
+          <param type="select" name="import_type" label="How would you like to import your dataset?" display="radio"
+                 help="This tool can be used to either import a new dataset from files, or select an existing dataset
                              from the Galaxy History in order to run analysis reports.">
-                <option value="files">Import a new dataset from files</option>
-                <option value="history">Select an existing dataset from the Galaxy history</option>
-            </param>
-            <when value="files">
-                <conditional name="dataset_cond">
-                    <param type="select" name="dataset_type" label="Dataset type" display="radio" help="Repertoire datasets
+              <option value="files">Import a new dataset from files</option>
+              <option value="history">Select an existing dataset from the Galaxy history</option>
+          </param>
+          <when value="files">
+              <conditional name="dataset_cond">
+                  <param type="select" name="dataset_type" label="Dataset type" display="radio" help="Repertoire datasets
                    should be used when making predictions per repertoire, such as predicting a disease state. Sequence or
                     receptor datasets should be used when predicting values for unpaired (single-chain) and paired immune
                      receptors respectively, like antigen specificity.">
-                        <option value="repertoire">Repertoire dataset</option>
-                        <option value="sequence">Sequence dataset (single chain)</option>
-                        <option value="receptor">Receptor dataset (paired chains)</option>
-                    </param>
-                    <when value="repertoire">
-                        <conditional name="metadata_cond">
-                            <param type="select" name="data_format" label="Data format" display="radio">
-                                <option value="AIRR">AIRR</option>
-                                <option value="IReceptor">iReceptor Gateway</option>
-                                <option value="ImmunoSEQRearrangement">immunoSEQ: rearrangement-level files</option>
-                                <option value="ImmunoSEQSample">immunoSEQ: sample-level files</option>
-                                <option value="MiXCR">MiXCR</option>
-                                <option value="VDJdb">VDJdb</option>
-                                <option value="TenxGenomics">10x Genomics ‘Clonotype consensus annotations’ (CSV)
-                                </option>
-                            </param>
-                            <when value="AIRR">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire ARR file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                            <when value="ImmunoSEQRearrangement">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire immunoSEQ rearrangement file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                            <when value="ImmunoSEQSample">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire immunoSEQ sample file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                            <when value="MiXCR">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire MiXCR file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                            <when value="VDJdb">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire VDJdb file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                            <when value="TenxGenomics">
-                                <param name="metadata_input" type="data" format="txt" label="Metadata file"
-                                       multiple="false"
-                                       help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire 10x Genomics file described in the metadata file must be selected under 'Data files'."/>
-                            </when>
-                        </conditional>
-                    </when>
-                    <when value="sequence">
-                        <param type="select" name="data_format" label="Data format" display="radio">
-                            <option value="AIRR">AIRR</option>
-                            <option value="IReceptor">iReceptor Gateway</option>
-                            <option value="ImmunoSEQRearrangement">ImmunoSEQ: rearrangement-level files</option>
-                            <option value="ImmunoSEQSample">ImmunoSEQ: sample-level files</option>
-                            <option value="MiXCR">MiXCR</option>
-                            <option value="VDJdb">VDJdb</option>
-                            <option value="TenxGenomics">10xGenomics ‘Clonotype consensus annotations’ (CSV)</option>
-                        </param>
-                        <param type="text" name="metadata_columns" optional="false" label="Metadata columns" help="Please
+                      <option value="repertoire">Repertoire dataset</option>
+                      <option value="sequence">Sequence dataset (single chain)</option>
+                      <option value="receptor">Receptor dataset (paired chains)</option>
+                  </param>
+                  <when value="repertoire">
+                      <conditional name="metadata_cond">
+                          <param type="select" name="data_format" label="Data format" display="radio">
+                              <option value="AIRR">AIRR</option>
+                              <option value="IReceptor">iReceptor Gateway</option>
+                              <option value="ImmunoSEQRearrangement">immunoSEQ: rearrangement-level files</option>
+                              <option value="ImmunoSEQSample">immunoSEQ: sample-level files</option>
+                              <option value="MiXCR">MiXCR</option>
+                              <option value="VDJdb">VDJdb</option>
+                              <option value="TenxGenomics">10x Genomics ‘Clonotype consensus annotations’ (CSV)</option>
+                          </param>
+                          <when value="AIRR">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire ARR file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                          <when value="ImmunoSEQRearrangement">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire immunoSEQ rearrangement file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                          <when value="ImmunoSEQSample">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire immunoSEQ sample file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                          <when value="MiXCR">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire MiXCR file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                          <when value="VDJdb">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire VDJdb file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                          <when value="TenxGenomics">
+                              <param name="metadata_input" type="data" format="txt" label="Metadata file"
+                                     multiple="false"
+                                     help="The metadata file describes metadata information for all repertoires included in the dataset. Every repertoire 10x Genomics file described in the metadata file must be selected under 'Data files'."/>
+                          </when>
+                      </conditional>
+                  </when>
+                  <when value="sequence">
+                      <param type="select" name="data_format" label="Data format" display="radio">
+                          <option value="AIRR">AIRR</option>
+                          <option value="IReceptor">iReceptor Gateway</option>
+                          <option value="ImmunoSEQRearrangement">ImmunoSEQ: rearrangement-level files</option>
+                          <option value="ImmunoSEQSample">ImmunoSEQ: sample-level files</option>
+                          <option value="MiXCR">MiXCR</option>
+                          <option value="VDJdb">VDJdb</option>
+                          <option value="TenxGenomics">10xGenomics ‘Clonotype consensus annotations’ (CSV)</option>
+                      </param>
+                      <param type="text" name="metadata_columns" optional="false" label="Metadata columns" help="Please
                       specify the names of the columns that contain metadata. The metadata columns specified here can be
                       used as labels for prediction. Multiple metadata columns may be specified and separated by comma,
                       for example: Epitope,Epitope gene,Epitope species"/>
-                    </when>
-                    <when value="receptor">
-                        <param type="select" name="data_format" label="Data format" display="radio">
-                            <option value="AIRR">AIRR</option>
-                            <option value="IReceptor">iReceptor Gateway</option>
-                            <option value="VDJdb">VDJdb</option>
-                            <option value="TenxGenomics">10xGenomics ‘Clonotype consensus annotations’ (CSV)</option>
-                        </param>
-                        <param type="select" name="receptor_type" label="Receptor type" display="radio">
-                            <option value="TRA_TRB">T cell alpha/beta</option>
-                            <option value="TRG_TRD">T cell gamma/delta</option>
-                            <option value="IGH_IGL">B cell heavy/light</option>
-                            <option value="IGH_IGK">B cell heavy/kappa</option>
-                        </param>
-                        <param type="text" name="metadata_columns" optional="false" label="Metadata columns" help="Please
+                  </when>
+                  <when value="receptor">
+                      <param type="select" name="data_format" label="Data format" display="radio">
+                          <option value="AIRR">AIRR</option>
+                          <option value="IReceptor">iReceptor Gateway</option>
+                          <option value="VDJdb">VDJdb</option>
+                          <option value="TenxGenomics">10xGenomics ‘Clonotype consensus annotations’ (CSV)</option>
+                      </param>
+                      <param type="select" name="receptor_type" label="Receptor type" display="radio">
+                          <option value="TRA_TRB">T cell alpha/beta</option>
+                          <option value="TRG_TRD">T cell gamma/delta</option>
+                          <option value="IGH_IGL">B cell heavy/light</option>
+                          <option value="IGH_IGK">B cell heavy/kappa</option>
+                      </param>
+                      <param type="text" name="metadata_columns" optional="false" label="Metadata columns" help="Please
                       specify the names of the columns that contain metadata. The metadata columns specified here can be
                       used as labels for prediction. Multiple metadata columns may be specified and separated by comma,
                       for example: Epitope,Epitope gene,Epitope species"/>
-                    </when>
-                </conditional>
-                <param name="data_input" type="data" multiple="true" label="Data files" min="1" max="2000"
-                       help="This field should include individual repertoire or receptor files, or iReceptor zip files.
-               Multiple files can be selected by holding down the control/command or shift key, or by clicking
-               'browse datasets' (folder button on the right). Important: make sure all the files you want to
-               include in the dataset are highlighted in blue or gray."/>
-            </when>
-            <when value="history">
-                <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true"
-                       help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
-            </when>
-        </conditional>
+                  </when>
+              </conditional>
+              <param name="data_input" type="data" multiple="true" label="Data files" min="1" max="2000"
+                     help="This field should include individual repertoire or receptor files, or iReceptor zip files. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted in blue or gray."/>
+          </when>
+          <when value="history">
+              <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset"
+                     optional="false"
+                     help="This field accepts a previously generated immuneML dataset."/>
+          </when>
+      </conditional>
 
-        <param name="reports" type="select" label="Which data analysis reports would you like to include?" help=""
-               display="checkboxes" multiple="true">
-            <option value="sequence_length_report">Sequence length distribution</option>
-            <option value="amino_acid_report">Amino acid frequency distribution</option>
-            <option value="vj_gene_report">VJ gene distribution</option>
-        </param>
-
-        # todo insert label param
-
-    </inputs>
+      <param name="reports" type="select" label="Which data analysis reports would you like to include?" help="" display="checkboxes" multiple="true">
+          <option value="sequence_length_report">Sequence length distribution</option>
+          <option value="amino_acid_report">Amino acid frequency distribution</option>
+          <option value="vj_gene_report">VJ gene distribution</option>
+      </param>
+  </inputs>
     <outputs>
+        <data format="zip" name="archive" label="Archive: immuneML dataset"/>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
-        <data format="immuneml_receptors" name="html_outfile" label="ImmuneML dataset"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="immuneML dataset"/>
     </outputs>
 
 
     <help><![CDATA[
 
-        In Galaxy, an immuneML dataset is simply a Galaxy collection containing all relevant files (including an optional metadata file).
-        The Create dataset Galaxy tool allows users to import data from various formats and create immuneML datasets in Galaxy.
-        These datasets are in an optimized binary (Pickle) format, which ensures that you can quickly import the dataset into
-        Galaxy tools without having to repeatedly specify the import parameters.
-
-        Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface. This can be done either
-        by uploading files from your local computer (use the 'Upload file' tool under the 'Get local data' menu), or by fetching
-        remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_import_remote_data.html>`_).
-
-        The imported immuneML dataset is stored in a Galaxy collection, which will appear as a history item on the right side of the screen,
-        and can later be selected as input to other tools.
-
-        The tool has a simplified and an advanced interface. The simplified interface is fully button-based, and relies
-        on default settings for importing datasets. The advanced interface gives full control over import settings through a YAML
-        specification. In most cases, the simplified interface will suffice.
-
-        For the exhaustive documentation of this tool and more information about immuneML datasets, see the tutorial `How to make an immuneML dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_dataset.html>`_.
-
-        **Tool output**
-
-        This Galaxy tool will produce the following history elements:
-
-        - ImmuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
-          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
-
-        - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
-          This file can be downloaded and altered (for example to export files in AIRR format, or use non-standard import parameters),
-          and run again using the 'Advanced' interface.
+        todo
 
     ]]>
     </help>
