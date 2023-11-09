@@ -1,4 +1,4 @@
-<tool id="iml_train_gen_model" name="Train Generative Model" version="1.0.0">
+<tool id="iml_train_gen_model" name="Train Generative Model" version="0.0.1">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>
@@ -31,9 +31,11 @@
     </command>
 
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+        <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true"
+               help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
         <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-        <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
+        <param name="data_input" type="data" multiple="true" label="Additional files" optional="true"
+               help="This field should include individual repertoire files, metadata files, receptor data and others."/>
     </inputs>
 
     <outputs>
@@ -45,8 +47,8 @@
     <help>
       <![CDATA[
 
-          This tool implements training generative AIRR models on the receptor level. Models that can be trained
-          for sequence generation include PWM, LSTM, VAE.
+          This tool implements training generative AIRR models on the receptor sequence level. Models that can be fitted
+          for sequence generation include PWM, LSTM, VAE, SoNNia.
 
           The tool takes a dataset as input which will be used to train a model, the model itself, and the number of
           sequences to generate to illustrate the applicability of the model. It can also produce reports of the fitted model
@@ -64,7 +66,9 @@
             contains the output of the TrainMLModel instruction including all trained models and their predictions, and report results.
             Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
-          - trained_model.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding). This .zip file can subsequently be used as an input when applying previously traine>
+          - trained_model.zip: a zip file containing the raw files for the optimal trained ML settings
+            (ML model, encoding). This zip file can subsequently be used as an input when applying previously trained
+            models.
 
         ]]>
 
