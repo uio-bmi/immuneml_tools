@@ -20,9 +20,10 @@
 
       python3 '$__tool_directory__/build_dataset_overview_yaml_wrapper.py'
       --output_path . --file_name specs.yaml
-      #for $report_name in $reports:
+      #for $report_name in $reports
         --"$report_name" True
       #end for
+      --label_name "$report_param_section.report_label"
       #if $import_cond.import_type == "files"
         #if $import_cond.dataset_cond.dataset_type == "repertoire"
             --is_repertoire True
@@ -165,17 +166,54 @@
           <option value="amino_acid_report">Amino acid frequency distribution</option>
           <option value="vj_gene_report">VJ gene distribution</option>
       </param>
+
+
+      <section name="report_param_section" title="Advanced report options" >
+        <param type="text" name="report_label" optional="false" label="Analysis label for reports"
+               help="By specifying an analysis label, report results will be separated by the label value.
+               E.g., the V and J gene distribution for 'diseased' and 'healthy' repertoires can be plotted in different colors.
+               Note that the given label name must be a valid label for the dataset. If you have previously imported
+               an immuneML dataset, the valid label name(s) are displayed in the summary HTML page."/>
+      </section>
+
   </inputs>
     <outputs>
-        <data format="zip" name="archive" label="Archive: immuneML dataset"/>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
+        <data format="zip" name="archive" label="Archive: immuneML dataset"/>
         <data format="immuneml_receptors.html" name="html_outfile" label="immuneML dataset"/>
     </outputs>
 
 
+
     <help><![CDATA[
 
-        todo
+        This Galaxy tool allows users to import data from various file formats and create an 'immuneML dataset'
+        in a standardized format. To run any of the immuneML Galaxy tools, the immuneML dataset can be selected
+        from the Galaxy history. Furthermore, this tool can be used to run optional analysis reports to gain insight about the dataset.
+        This can be done either when importing a new dataset, or by selecting an existing dataset from the Galaxy history.
+
+        Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface. This can be done either
+        by uploading files from your local computer (use the 'Upload file' tool under the 'Get local data' menu), or by fetching
+        remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_import_remote_data.html>`_).
+
+        For the exhaustive documentation of this tool and more information about immuneML datasets, see the tutorial
+        `How to make an immuneML dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_dataset.html>`_.
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - immuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools.
+          The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, and available labels.
+          When running optional reports, the report results are shown here as well.
+
+        - Archive: immuneML dataset: a .zip file containing the complete output folder as it was produced by immuneML.
+          This folder contains the raw immuneML dataset files, optional report results and log file.
+
+        - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
+          This file can be downloaded and altered (for example to use non-standard import parameters),
+          and run again using the 'Advanced' interface.
 
     ]]>
     </help>
