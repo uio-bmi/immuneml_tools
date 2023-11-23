@@ -1,0 +1,54 @@
+<tool id="iml_apply_gen_model" name="Apply Generative Model" version="0.1">
+    <command><![CDATA[
+      source /storage/iml_env/bin/activate &&
+
+      python3 '$__tool_directory__/build_apply_gen_model_specs.py'
+      --output_path . --file_name specs.yaml --ml_config_path ml_config_path --gen_example_count $gen_example_count
+      #for $report_name in $reports
+        --"$report_name" True
+      #end for
+
+
+      && mv ./specs.yaml apply_gen_model.yaml &&
+      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool &&
+
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      ]]>
+    </command>
+    <inputs>
+        <param name="ml_config_path" type="data" format="zip" label="Trained generative model as a zip file" multiple="false"/>
+        <param name="gen_example_count" type="int" label="Number of examples to generate"/>
+        <param name="reports" type="select" label="Which reports would you like to include?" help="" display="checkboxes" multiple="true">
+          <option value="sequence_length_report">Sequence length distribution</option>
+          <option value="amino_acid_report">Amino acid frequency distribution</option>
+          <option value="gen_model_overview">Generative model overview</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="html" name="html_outfile" label="Summary: Generated dataset"/>
+        <data format="zip" name="archive" label="Archive: Generated dataset"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="Generated dataset"/>
+    </outputs>
+
+    <help><![CDATA[
+
+        This Galaxy tool allows users to use the trained generative model to generate new examples. Optionally, it can
+        provide some reports of the generated data or of the model used for generation.
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - immuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools.
+          The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, and available labels.
+          When running optional reports, the report results are shown here as well.
+
+        - Archive: immuneML dataset: a .zip file containing the complete output folder as it was produced by immuneML.
+          This folder contains the raw immuneML dataset files, optional report results and log file.
+
+    ]]>
+    </help>
+
+</tool>
