@@ -1,5 +1,5 @@
-<tool id="iml_apply_gen_model" name="Apply Generative Model" version="0.1">
-    <command><![CDATA[
+<tool id="immuneml_apply_gen_model" name="Apply Generative Model" version="0.0.1">
+  <command><![CDATA[
       source /storage/iml_env/bin/activate &&
 
       python3 '$__tool_directory__/build_apply_gen_model_specs.py'
@@ -15,21 +15,22 @@
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
-    </command>
-    <inputs>
-        <param name="ml_config_path" type="data" format="zip" label="Trained generative model as a zip file" multiple="false"/>
-        <param name="gen_example_count" type="int" label="Number of examples to generate"/>
-        <param name="reports" type="select" label="Which reports would you like to include?" help="" display="checkboxes" multiple="true">
-          <option value="sequence_length_report">Sequence length distribution</option>
-          <option value="amino_acid_report">Amino acid frequency distribution</option>
-          <option value="gen_model_overview">Generative model overview</option>
-        </param>
-    </inputs>
+  </command>
+  <inputs>
+     <param name="ml_config_path" type="data" format="zip" label="Trained generative model as a zip file" />
+     <param name="gen_example_count" type="integer" value="100" label="Number of examples to generate" />
+     <param name="reports" type="select" label="Which reports would you like to include?" help="" display="checkboxes" multiple="true">
+       <option value="sequence_length_report">Sequence length distribution</option>
+       <option value="amino_acid_report">Amino acid frequency distribution</option>
+       <option value="gen_model_overview">Generative model overview</option>
+     </param>
+  </inputs>
     <outputs>
         <data format="html" name="html_outfile" label="Summary: Generated dataset"/>
         <data format="zip" name="archive" label="Archive: Generated dataset"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="Generated dataset"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="Generated dataset overview"/>
     </outputs>
+
 
     <help><![CDATA[
 
