@@ -1,4 +1,4 @@
-<tool id="immuneml_simulation" name="Simulate immune events into an existing repertoire dataset" version="@VERSION@.0">
+<tool id="immuneml_simulation" name="Simulate immune events with LIgO" version="@VERSION@.0">
   <description></description>
     <macros>
         <import>prod_macros.xml</import>
@@ -26,30 +26,40 @@
   </inputs>
     <outputs>
         <data format="zip" name="archive" label="Archive: immune signal simulation"/>
-        <data format="immuneml_receptors" name="html_outfile" label="ImmuneML dataset (simulated immune signals)"/>
+        <data format="immuneml_receptors" name="html_outfile" label="Simulated immuneML dataset"/>
     </outputs>
 
 
   <help><![CDATA[
 
-        This Galaxy tool can be used to implant short disease-associated motifs into an existing Repertoire dataset.
-        Such a dataset with simulated immune signals can be used to benchmark different ML methods.
-        Any type of repertoire dataset (experimental or simulated) can be used as a starting point for an immune event simulation, as long as it contains amino acid sequences.
+        This tool generates synthetic immune receptor datasets (either on repertoire, receptor or sequence level)
+        with different immune events and known ground-truth.
 
-        If you instead want to simulate a synthetic dataset from scratch, start with the
-        tool `Simulate a synthetic immune receptor or repertoire dataset <root?tool_id=immuneml_simulate_dataset>`_.
+        The simulation setup is flexible and allows the simulation of immune signals (sets of (gapped) k-mers or
+        positional weight matrices with optional V/J gene information and sequence position) and immune events (labels
+        on top of immune signals that could correspond to specific-diseases on the repertoire level).
 
-        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate immune events into an existing AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_signals.html>`_.
+        The resulting dataset is fully annotated on the sequence level with immune signals and events.
+
+        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_signals.html>`_.
+
+        For more information on the simulation, see the original manuscript:
+
+        Chernigovskaya, M., Pavlović, M., Kanduri, C., Gielis, S., Robert, P. A., Scheffer, L., Slabodkin, A.,
+        Haff, I. H., Meysman, P., Yaari, G., Sandve, G. K., & Greiff, V. (2023). Simulation of adaptive immune
+        receptors and repertoires with complex immune information to guide the development and benchmarking of
+        AIRR machine learning (p. 2023.10.20.562936). bioRxiv. https://doi.org/10.1101/2023.10.20.562936
+
 
         **Tool output**
 
         This Galaxy tool will produce the following history elements:
 
-        - ImmuneML dataset (simulated immune signals): a repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+        - ImmuneML dataset: a dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
           (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
 
-        - Archive: immune signal simulation: a .zip file containing the complete output folder as it was produced by immuneML. This folder
-          contains the output of the Simulation instruction including all raw data files.
+        - Archive: LIgO simulation: a .zip file containing the complete output folder as it was produced by immuneML and LIgO. This folder
+          contains the output of the LigoSim instruction including all raw data files.
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
 
