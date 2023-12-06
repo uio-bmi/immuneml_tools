@@ -54,7 +54,6 @@
         <param name="reports" type="select" label="Data analysis reports" help="These reports will be run on the original dataset as well as the generated examples." display="checkboxes" multiple="true">
             <option value="sequence_length_report">Sequence length distribution</option>
             <option value="amino_acid_report">Amino acid frequency distribution</option>
-            <option value="vj_gene_report">VJ gene distribution</option>
             <option value="kl_gen_model_report">KL divergence between k-mer distributions</option>
         </param>
 
