@@ -31,7 +31,7 @@
     </command>
 
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset for training" optional="true"
+        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset for training" optional="false"
                help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
 
         <param type="select" name="generative_method" label="What type of model would you like to train?" display="radio"
@@ -43,10 +43,10 @@
         </param>
 
         <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="radio">
+            <option value="TRB">T cell beta</option>
+            <option value="TRA">T cell alpha</option>
             <option value="IGH">B cell heavy</option>
             <option value="IGL">B cell light</option>
-            <option value="TRA">T cell alpha</option>
-            <option value="TRB">T cell beta</option>
         </param>
 
         <param type="integer" name="gen_example_count" label="Number of examples to generate" value="100" min="1"/>
