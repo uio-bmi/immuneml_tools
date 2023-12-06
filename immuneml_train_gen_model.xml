@@ -42,7 +42,7 @@
             <option value="SoNNia">SoNNia</option>
         </param>
 
-        <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="checkboxes" multiple="true">
+        <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="radio">
             <option value="IGH">B cell heavy</option>
             <option value="IGL">B cell light</option>
             <option value="TRA">T cell alpha</option>
