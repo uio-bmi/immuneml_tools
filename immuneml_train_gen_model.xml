@@ -1,7 +1,8 @@
-<tool id="iml_train_gen_model_interface" name="Train Generative Model - easy interface" version="0.0.1">
+<tool id="iml_train_gen_model_interface" name="Train Generative Model" version="0.0.1">
     <description></description>
     <command>
         <![CDATA[
+        source /storage/iml_env/bin/activate &&
 
       #if $iml_input
          cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
@@ -9,11 +10,22 @@
          rm -rf repertoires &&
       #end if
 
-      source /storage/iml_env/bin/activate &&
-      cp "$yaml_input" yaml_copy &&
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainGenModel&>/dev/null &&
+      python3 '$__tool_directory__/build_train_gen_model_yaml_wrapper.py'
+      --output_path . --file_name specs.yaml
+      #for $report_name in $reports
+        --"$report_name" True
+      #end for
+      --training_percentage $training_percentage
+      --export_dataset_type $export_dataset_type
+      --gen_example_count $gen_example_count
+      --generative_method $generative_method
+      --chain_type $chain_type
+
+      && mv ./specs.yaml train_generative_model.yaml &&
+      immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
+
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model} &&
+      mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
     </command>
@@ -22,7 +34,7 @@
         <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset for training" optional="true"
                help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
 
-        <param type="select" name="generative_model" label="What type of model would you like to train?" display="radio"
+        <param type="select" name="generative_method" label="What type of model would you like to train?" display="radio"
                    help="">
             <option value="PWM">PWM</option>
             <option value="SimpleLSTM">LSTM</option>
@@ -30,17 +42,14 @@
             <option value="SoNNia">SoNNia</option>
         </param>
 
-        <param type="select" name="chain" label="Chain type" display="radio">
+        <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="checkboxes" multiple="true">
             <option value="IGH">B cell heavy</option>
             <option value="IGL">B cell light</option>
-            <option value="IGK">B cell kappa</option>
             <option value="TRA">T cell alpha</option>
             <option value="TRB">T cell beta</option>
-            <option value="TRG">T cell gamma</option>
-            <option value="TRD">T cell delta</option>
         </param>
 
-        <param type="integer" name="n_examples" label="Number of examples to generate" value="100" min="1"/>
+        <param type="integer" name="gen_example_count" label="Number of examples to generate" value="100" min="1"/>
 
         <param name="reports" type="select" label="Data analysis reports" help="These reports will be run on the original dataset as well as the generated examples." display="checkboxes" multiple="true">
             <option value="sequence_length_report">Sequence length distribution</option>
@@ -51,7 +60,7 @@
 
         <param type="integer" name="training_percentage" label="Percentage of data that is used for training" value="70" min="10" max="100" help="This part of the data is used for training the generative model. The remaining data is used for comparison with the generated data."/>
 
-        <param type="select" name="export_dataset" label="How to export the data" display="radio"
+        <param type="select" name="export_dataset_type" label="How to export the data" display="radio"
                help="">
             <option value="generated_dataset">Export only the generated dataset</option>
             <option value="combined_dataset">Export only the combined original + generated dataset (sequence origins are labelled)</option>
@@ -59,9 +68,10 @@
     </inputs>
 
     <outputs>
+        <data format="txt" name="specs" label="train_generative_model.yaml"/>
         <data format="zip" name="generative_model" label="generative_model.zip"/>
         <data format="zip" name="archive" label="Archive: generative model training"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (generative model)"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
     </outputs>
 
     <help>
@@ -91,6 +101,9 @@
 
           - trained_model.zip: a zip file containing the raw files for the generative model.
             This zip file can subsequently be used as an input when applying the generative model to generate more data.
+
+          - train_generative_model.yaml: the YAML specification file that was used by immuneML to train generative models.
+            This file can be downloaded and altered (for example to use advanced parameters).
 
         ]]>
 
