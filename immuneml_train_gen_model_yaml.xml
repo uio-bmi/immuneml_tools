@@ -1,0 +1,77 @@
+<tool id="iml_train_gen_model" name="Train Generative Model" version="0.0.1">
+  <description></description>
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <command>
+        <![CDATA[
+
+      #if $iml_input
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+         (mv repertoires/* . &>/dev/null || :) &&
+         rm -rf repertoires &&
+      #end if
+
+      #set $input_orig_names = []
+      #if $data_input
+          #for $input in $data_input
+             #set input_orig_names += [str($input.element_identifier)]
+             ([ -e ./"$input.element_identifier" ] && echo "File '$input.element_identifier' already exists in the input folder, skipping." || ln -s $input "$input.element_identifier") &&
+          #end for#
+      #end if
+
+      source /storage/iml_env/bin/activate &&
+      cp "$yaml_input" yaml_copy &&
+      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainGenModel&>/dev/null &&
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      ]]>
+    </command>
+
+    <inputs>
+        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="true"
+               help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+        <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+        <param name="data_input" type="data" multiple="true" label="Additional files" optional="true"
+               help="This field should include individual repertoire files, metadata files, receptor data and others."/>
+    </inputs>
+
+    <outputs>
+        <data format="zip" name="optimal_model" label="trained_model.zip"/>
+        <data format="zip" name="archive" label="Archive: generative model training"/>
+        <data format="html" name="html_outfile" label="Summary: Generative model training"/>
+    </outputs>
+
+    <help>
+      <![CDATA[
+
+          This tool implements training generative AIRR models on the receptor sequence level. Models that can be fitted
+          for sequence generation include PWM, LSTM, VAE, SoNNia.
+
+          The tool takes a dataset as input which will be used to train a model, the model itself, and the number of
+          sequences to generate to illustrate the applicability of the model. It can also produce reports of the fitted model
+          and reports from datasets of original and generated sequences.
+
+          For full documentation, see https://docs.immuneml.uio.no/.
+
+          **Tool output**
+
+          This Galaxy tool will produce the following history elements:
+
+          - Summary: Generative model training: a HTML page reporting on the training results.
+
+          - Archive: Generative model training: a .zip file containing the complete output folder as it was produced by immuneML. This folder
+            contains the output of the TrainMLModel instruction including all trained models and their predictions, and report results.
+            Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
+
+          - trained_model.zip: a zip file containing the raw files for the optimal trained ML settings
+            (ML model, encoding). This zip file can subsequently be used as an input when applying previously trained
+            models.
+
+        ]]>
+
+    </help>
+
+</tool>

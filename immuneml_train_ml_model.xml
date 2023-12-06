@@ -7,7 +7,7 @@
   <command><![CDATA[
 
       #if $iml_input
-         cp -r ${iml_input.extra_files_path}/result/* . &&
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
 	 (mv repertoires/* . &>/dev/null || :) &&
 	 rm -rf repertoires &&
       #end if
@@ -28,7 +28,7 @@
       ]]>
   </command>
   <inputs>
-      <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+      <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
       <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
   </inputs>

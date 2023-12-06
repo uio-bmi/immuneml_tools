@@ -4,7 +4,7 @@
 
       #if $import_cond.import_type == "history"
         #if $import_cond.iml_input
-           cp -r ${import_cond.iml_input.extra_files_path}/result/* . &&
+           cp -r ${import_cond.iml_input.extra_files_path}/galaxy_dataset/* . &&
 	   (mv repertoires/* . &>/dev/null || :) &&
 	   rm -rf repertoires &&
         #end if
@@ -161,8 +161,9 @@
           </when>
       </conditional>
 
-      <param name="reports" type="select" label="Which data analysis reports would you like to include?" help="" display="checkboxes" multiple="true">
+      <param name="reports" type="select" label="Data analysis reports" help="" display="checkboxes" multiple="true">
           <option value="sequence_length_report">Sequence length distribution</option>
+          <option value="sequence_count_report">Sequence count distribution</option>
           <option value="amino_acid_report">Amino acid frequency distribution</option>
           <option value="vj_gene_report">VJ gene distribution</option>
       </param>
