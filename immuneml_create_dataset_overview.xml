@@ -8,7 +8,7 @@
 	   (mv repertoires/* . &>/dev/null || :) &&
 	   rm -rf repertoires &&
         #end if
-      #else if $import_cond.import_type == "files"
+      #else
         #set $input_orig_names = []
         #for $input in $import_cond.data_input
           #if $input
@@ -18,37 +18,41 @@
         #end for
       #end if
 
-      python3 '$__tool_directory__/build_dataset_overview_yaml_wrapper.py'
-      --output_path . --file_name specs.yaml
-      #for $report_name in $reports
-        --"$report_name" True
-      #end for
-      --label_name "$report_param_section.report_label"
-      #if $import_cond.import_type == "files"
-        #if $import_cond.dataset_cond.dataset_type == "repertoire"
-            --is_repertoire True
-            --format "$import_cond.dataset_cond.metadata_cond.data_format"
-            #if $import_cond.dataset_cond.metadata_cond.data_format != "IReceptor"
-                --metadata_file "$import_cond.dataset_cond.metadata_cond.metadata_input" &&
-                cp $import_cond.dataset_cond.metadata_cond.metadata_input "$import_cond.dataset_cond.metadata_cond.metadata_input.element_identifier"
-            #end if
-        #else
-            --is_repertoire False
-            --format "$import_cond.dataset_cond.data_format"
-            --metadata_columns "$import_cond.dataset_cond.metadata_columns"
-            #if $import_cond.dataset_cond.dataset_type == "sequence"
-                --paired False
-            #elif $import_cond.dataset_cond.dataset_type == "receptor"
-                --paired True
-                --receptor_chains $import_cond.dataset_cond.receptor_type
-            #end if
-        #end if
+      #if $import_cond.import_type == "yaml"
+        cp $yaml_input create_dataset.yaml &&
       #else
-          --existing_dataset True
+        python3 '$__tool_directory__/build_dataset_overview_yaml_wrapper.py'
+        --output_path . --file_name specs.yaml
+        #for $report_name in $import_cond.reports
+          --"$report_name" True
+        #end for
+        --label_name "$import_cond.report_param_section.report_label"
+        #if $import_cond.import_type == "files"
+          #if $import_cond.dataset_cond.dataset_type == "repertoire"
+              --is_repertoire True
+              --format "$import_cond.dataset_cond.metadata_cond.data_format"
+              #if $import_cond.dataset_cond.metadata_cond.data_format != "IReceptor"
+                  --metadata_file "$import_cond.dataset_cond.metadata_cond.metadata_input" &&
+                  cp $import_cond.dataset_cond.metadata_cond.metadata_input "$import_cond.dataset_cond.metadata_cond.metadata_input.element_identifier"
+              #end if
+          #else
+              --is_repertoire False
+              --format "$import_cond.dataset_cond.data_format"
+              --metadata_columns "$import_cond.dataset_cond.metadata_columns"
+              #if $import_cond.dataset_cond.dataset_type == "sequence"
+                  --paired False
+              #elif $import_cond.dataset_cond.dataset_type == "receptor"
+                  --paired True
+                  --receptor_chains $import_cond.dataset_cond.receptor_type
+              #end if
+          #end if
+        #else
+            --existing_dataset True
+        #end if
+
+        && mv ./specs.yaml create_dataset.yaml &&
       #end if
 
-
-      && mv ./specs.yaml create_dataset.yaml &&
       immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
@@ -63,6 +67,7 @@
                              from the Galaxy History in order to run analysis reports.">
               <option value="files">Import a new dataset from files</option>
               <option value="history">Select an existing dataset from the Galaxy history</option>
+              <option value="yaml">Advanced data import through YAML specification</option>
           </param>
           <when value="files">
               <conditional name="dataset_cond">
@@ -153,29 +158,50 @@
               </conditional>
               <param name="data_input" type="data" multiple="true" label="Data files" min="1" max="2000"
                      help="This field should include individual repertoire or receptor files, or iReceptor zip files. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted in blue or gray."/>
+
+              <param name="reports" type="select" label="Data analysis reports" help="" display="checkboxes" multiple="true">
+                  <option value="sequence_length_report">Sequence length distribution</option>
+                  <option value="sequence_count_report">Sequence count distribution</option>
+                  <option value="amino_acid_report">Amino acid frequency distribution</option>
+                  <option value="vj_gene_report">VJ gene distribution</option>
+              </param>
+
+              <section name="report_param_section" title="Advanced report options" >
+                  <param type="text" name="report_label" optional="false" label="Analysis label for reports"
+                         help="By specifying an analysis label, report results will be separated by the label value.
+               E.g., the V and J gene distribution for 'diseased' and 'healthy' repertoires can be plotted in different colors.
+               Note that the given label name must be a valid label for the dataset. If you have previously imported
+               an immuneML dataset, the valid label name(s) are displayed in the summary HTML page."/>
+              </section>
+
           </when>
           <when value="history">
               <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset"
                      optional="false"
                      help="This field accepts a previously generated immuneML dataset."/>
-          </when>
-      </conditional>
 
-      <param name="reports" type="select" label="Data analysis reports" help="" display="checkboxes" multiple="true">
-          <option value="sequence_length_report">Sequence length distribution</option>
-          <option value="sequence_count_report">Sequence count distribution</option>
-          <option value="amino_acid_report">Amino acid frequency distribution</option>
-          <option value="vj_gene_report">VJ gene distribution</option>
-      </param>
+              <param name="reports" type="select" label="Data analysis reports" help="" display="checkboxes" multiple="true">
+                  <option value="sequence_length_report">Sequence length distribution</option>
+                  <option value="sequence_count_report">Sequence count distribution</option>
+                  <option value="amino_acid_report">Amino acid frequency distribution</option>
+                  <option value="vj_gene_report">VJ gene distribution</option>
+              </param>
 
-
-      <section name="report_param_section" title="Advanced report options" >
-        <param type="text" name="report_label" optional="false" label="Analysis label for reports"
-               help="By specifying an analysis label, report results will be separated by the label value.
+              <section name="report_param_section" title="Advanced report options" >
+                  <param type="text" name="report_label" optional="false" label="Analysis label for reports"
+                         help="By specifying an analysis label, report results will be separated by the label value.
                E.g., the V and J gene distribution for 'diseased' and 'healthy' repertoires can be plotted in different colors.
                Note that the given label name must be a valid label for the dataset. If you have previously imported
                an immuneML dataset, the valid label name(s) are displayed in the summary HTML page."/>
-      </section>
+              </section>
+          </when>
+
+          <when value="yaml">
+              <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+              <param name="data_input" type="data" multiple="true" label="Data files" min="1" max="2000"
+                     help="This field should include individual repertoire or receptor files, or iReceptor zip files. Multiple files can be selected by holding down the control/command or shift key, or by clicking 'browse datasets' (folder button on the right). Important: make sure all the files you want to include in the dataset are highlighted in blue or gray."/>
+          </when>
+      </conditional>
 
   </inputs>
     <outputs>
