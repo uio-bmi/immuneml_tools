@@ -38,7 +38,7 @@
                    help="">
             <option value="PWM">PWM</option>
             <option value="SimpleLSTM">LSTM</option>
-            <option value="VAE">VAE</option>
+            <option value="SimpleVAE">VAE</option>
             <option value="SoNNia">SoNNia</option>
         </param>
 
@@ -61,8 +61,8 @@
 
         <param type="select" name="export_dataset_type" label="How to export the data" display="radio"
                help="">
+            <option value="combined_dataset">Export the combined original + generated dataset (sequence origins are labelled)</option>
             <option value="generated_dataset">Export only the generated dataset</option>
-            <option value="combined_dataset">Export only the combined original + generated dataset (sequence origins are labelled)</option>
         </param>
     </inputs>
 
@@ -76,12 +76,9 @@
     <help>
       <![CDATA[
 
-          This tool implements training generative AIRR models on the receptor sequence level. Models that can be fitted
-          for sequence generation include PWM, LSTM, VAE, SoNNia.
-
-          The tool takes a dataset as input which will be used to train a model, the model itself, and the number of
-          sequences to generate to illustrate the applicability of the model. It can also produce reports of the fitted model
-          and reports from datasets of original and generated sequences.
+          This Galaxy tool allows users to train a generative model for receptor sequences, which can be used
+          to generate synthetic datasets.
+          Optionally, it can provide some reports of the generated data or of the model used for generation.
 
           For full documentation, see https://docs.immuneml.uio.no/.
 
