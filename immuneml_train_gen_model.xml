@@ -39,7 +39,6 @@
             <option value="PWM">PWM</option>
             <option value="SimpleLSTM">LSTM</option>
             <option value="SimpleVAE">VAE</option>
-            <option value="SoNNia">SoNNia</option>
         </param>
 
         <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="radio">
