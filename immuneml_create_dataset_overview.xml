@@ -63,8 +63,9 @@
   <inputs>
       <conditional name="import_cond">
           <param type="select" name="import_type" label="How would you like to import your dataset?" display="radio"
-                 help="This tool can be used to either import a new dataset from files, or select an existing dataset
-                             from the Galaxy History in order to run analysis reports.">
+                 help="An imported dataset can be used as input for other Galaxy tools.
+                 Furthermore, this tool allows you to run data analysis report(s) on a new or existing immuneML dataset.
+                 Advanced import parameters (and reports) can be run through the YAML specification.">
               <option value="files">Import a new dataset from files</option>
               <option value="history">Select an existing dataset from the Galaxy history</option>
               <option value="yaml">Advanced data import through YAML specification</option>
