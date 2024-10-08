@@ -11,7 +11,7 @@
       #end if
 
       python3 '$__tool_directory__/build_train_gen_model_yaml_wrapper.py'
-      --output_path . --file_name specs.yaml
+      --output_path . --file_name train_generative_model.yaml
       #for $report_name in $reports
         --"$report_name" True
       #end for
@@ -21,10 +21,10 @@
       --generative_method $generative_method
       --chain_type $chain_type
 
-      && mv ./specs.yaml train_generative_model.yaml &&
-      immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
+      && immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ./train_generative_model.yaml ${specs} &&
       mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
