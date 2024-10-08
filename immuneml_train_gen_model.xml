@@ -21,10 +21,10 @@
       --generative_method $generative_method
       --chain_type $chain_type
 
-      && immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
+      && cp ./train_generative_model.yaml ${specs} &&
+      immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ./train_generative_model.yaml ${specs} &&
       mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>

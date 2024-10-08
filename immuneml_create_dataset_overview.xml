@@ -22,7 +22,7 @@
         cp $yaml_input create_dataset.yaml &&
       #else
         python3 '$__tool_directory__/build_dataset_overview_yaml_wrapper.py'
-        --output_path . --file_name specs.yaml
+        --output_path . --file_name create_dataset.yaml
         #for $report_name in $import_cond.reports
           --"$report_name" True
         #end for
@@ -49,14 +49,13 @@
         #else
             --existing_dataset True
         #end if
-
-        && mv ./specs.yaml create_dataset.yaml &&
       #end if
+
+      && cp ./create_dataset.yaml ${specs} &&
 
       immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ./create_dataset.yaml ${specs} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
   </command>
