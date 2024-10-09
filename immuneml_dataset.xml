@@ -1,4 +1,9 @@
-<tool id="iml_dataset_overview" name="Create dataset with reports" version="0.1">
+<tool id="immuneml_dataset" name="Create Dataset with Reports" version="@VERSION@.0">
+    <description></description>
+<!--    <macros>-->
+<!--        <import>prod_macros.xml</import>-->
+<!--    </macros>-->
+<!--    <expand macro="requirements" />-->
   <command><![CDATA[
       source /storage/iml_env/bin/activate &&
 

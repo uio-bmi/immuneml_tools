@@ -1,68 +1,89 @@
-<tool id="iml_train_gen_model_interface" name="Train Generative Model" version="0.0.1">
+<tool id="immuneml_train_gen_model" name="Train Generative Model" version="@VERSION@.0">
     <description></description>
+<!--    <macros>-->
+<!--        <import>prod_macros.xml</import>-->
+<!--    </macros>-->
+<!--    <expand macro="requirements" />-->
     <command>
         <![CDATA[
         source /storage/iml_env/bin/activate &&
 
-      #if $iml_input
-         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
-         (mv repertoires/* . &>/dev/null || :) &&
-         rm -rf repertoires &&
-      #end if
+        #if $iml_input
+           cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+           (mv repertoires/* . &>/dev/null || :) &&
+           rm -rf repertoires &&
+        #end if
 
-      python3 '$__tool_directory__/build_train_gen_model_yaml_wrapper.py'
-      --output_path . --file_name train_generative_model.yaml
-      #for $report_name in $reports
-        --"$report_name" True
-      #end for
-      --training_percentage $training_percentage
-      --export_dataset_type $export_dataset_type
-      --gen_example_count $gen_example_count
-      --generative_method $generative_method
-      --chain_type $chain_type
+        #if $interface_cond.interface_type == "yaml"
+          cp $yaml_input train_generative_model.yaml
+        #else
+          python3 '$__tool_directory__/build_train_gen_model_yaml_wrapper.py'
+          --output_path . --file_name train_generative_model.yaml
+          #for $report_name in $interface_cond.reports
+            --"$report_name" True
+          #end for
+          --training_percentage $interface_cond.training_percentage
+          --export_dataset_type $interface_cond.export_dataset_type
+          --gen_example_count $interface_cond.gen_example_count
+          --generative_method $interface_cond.generative_method
+          --chain_type $interface_cond.chain_type
+        #end if
 
-      && cp ./train_generative_model.yaml ${specs} &&
-      immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
+        && cp ./train_generative_model.yaml ${specs} &&
+        immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
 
-      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
-      ]]>
+        mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+        mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
+        mv ${html_outfile.files_path}/immuneML_output.zip $archive
+        ]]>
     </command>
 
     <inputs>
         <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset for training" optional="false"
                help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
 
-        <param type="select" name="generative_method" label="What type of model would you like to train?" display="radio"
+        <conditional name="interface_cond">
+            <param type="select" name="interface_type" label="How would you like to define your generative model training parameters?" display="radio"
                    help="">
-            <option value="PWM">PWM</option>
-            <option value="SimpleLSTM">LSTM</option>
-            <option value="SimpleVAE">VAE</option>
-        </param>
+                <option value="buttons">Button-based interface</option>
+                <option value="yaml">YAML specification (full control over parameters)</option>
+            </param>
+            <when value="buttons">
+                <param type="select" name="generative_method" label="What type of model would you like to train?" display="radio"
+                       help="">
+                    <option value="PWM">PWM</option>
+                    <option value="SimpleLSTM">LSTM</option>
+                    <option value="SimpleVAE">VAE</option>
+                </param>
 
-        <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="radio">
-            <option value="TRB">T cell beta</option>
-            <option value="TRA">T cell alpha</option>
-            <option value="IGH">B cell heavy</option>
-            <option value="IGL">B cell light</option>
-        </param>
+                <param name="chain_type" type="select" label="Chain type" help="Chain type for the sequences to generate" display="radio">
+                    <option value="TRB">T cell beta</option>
+                    <option value="TRA">T cell alpha</option>
+                    <option value="IGH">B cell heavy</option>
+                    <option value="IGL">B cell light</option>
+                </param>
 
-        <param type="integer" name="gen_example_count" label="Number of examples to generate" value="100" min="1"/>
+                <param type="integer" name="gen_example_count" label="Number of examples to generate" value="100" min="1"/>
 
-        <param name="reports" type="select" label="Data analysis reports" help="These reports will be run on the original dataset as well as the generated examples." display="checkboxes" multiple="true">
-            <option value="sequence_length_report">Sequence length distribution</option>
-            <option value="amino_acid_report">Amino acid frequency distribution</option>
-            <option value="kl_gen_model_report">KL divergence between k-mer distributions</option>
-        </param>
+                <param name="reports" type="select" label="Data analysis reports" help="These reports will be run on the original dataset as well as the generated examples." display="checkboxes" multiple="true">
+                    <option value="sequence_length_report">Sequence length distribution</option>
+                    <option value="amino_acid_report">Amino acid frequency distribution</option>
+                    <option value="kl_gen_model_report">KL divergence between k-mer distributions</option>
+                </param>
 
-        <param type="integer" name="training_percentage" label="Percentage of data that is used for training" value="70" min="10" max="100" help="This part of the data is used for training the generative model. The remaining data is used for comparison with the generated data."/>
+                <param type="integer" name="training_percentage" label="Percentage of data that is used for training" value="70" min="10" max="100" help="This part of the data is used for training the generative model. The remaining data is used for comparison with the generated data."/>
 
-        <param type="select" name="export_dataset_type" label="How to export the data" display="radio"
-               help="">
-            <option value="combined_dataset">Export the combined original + generated dataset (sequence origins are labelled)</option>
-            <option value="generated_dataset">Export only the generated dataset</option>
-        </param>
+                <param type="select" name="export_dataset_type" label="How to export the data" display="radio"
+                       help="">
+                    <option value="combined_dataset">Export the combined original + generated dataset (sequence origins are labelled)</option>
+                    <option value="generated_dataset">Export only the generated dataset</option>
+                </param>
+            </when>
+            <when value="yaml">
+              <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+            </when>
+        </conditional>
+
     </inputs>
 
     <outputs>

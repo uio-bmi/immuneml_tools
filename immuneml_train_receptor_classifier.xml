@@ -1,50 +1,51 @@
-<tool id="immuneml_train_classifiers" name="Train immune receptor classifiers (simplified interface)" version="@VERSION@.0">
+<tool id="immuneml_train_receptor_classifier" name="Train Receptor Classifiers (Simplified Interface)" version="@VERSION@.0">
   <description></description>
-    <macros>
-        <import>prod_macros.xml</import>
-    </macros>
-    <expand macro="requirements" />
-    <command><![CDATA[
+<!--    <macros>-->
+<!--        <import>prod_macros.xml</import>-->
+<!--    </macros>-->
+<!--    <expand macro="requirements" />-->
+  <command><![CDATA[
+      source /storage/iml_env/bin/activate &&
 
-        #if $iml_input
-           cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
-           (mv repertoires/* . &>/dev/null || : ) &&
-           rm -rf repertoires &&
-        #end if
+      #if $iml_input
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+         (mv repertoires/* . &>/dev/null || : ) &&
+         rm -rf repertoires &&
+      #end if
 
-        python '$__tool_directory__/build_yaml_from_arguments_wrapper.py' --output_path $specs.files_path
-        #if $labels
-            --labels "$labels"
-        #end if
-        #if $ml_methods
-            #set methods_splitted = str($ml_methods).replace(",", " ")
-            --ml_methods $methods_splitted
-        #end if
-        #if $training_percentage
-            --training_percentage $training_percentage
-        #end if
-        #if $split_count
-            --split_count $split_count
-        #end if
+      python '$__tool_directory__/build_yaml_from_arguments_wrapper.py'
+      --output_path . --file_name receptor_classification.yaml
+      #if $labels
+          --labels "$labels"
+      #end if
+      #if $ml_methods
+          #set methods_splitted = str($ml_methods).replace(",", " ")
+          --ml_methods $methods_splitted
+      #end if
+      #if $training_percentage
+          --training_percentage $training_percentage
+      #end if
+      #if $split_count
+          --split_count $split_count
+      #end if
 
-        --gap_type $gap_cond.gap_type
-        #if $gap_cond.gap_type == "ungapped"
-            --k $gap_cond.k
-        #end if
-        #if $gap_cond.gap_type == "gapped"
-            --k_left $gap_cond.k_left
-            --k_right $gap_cond.k_right
-            --min_gap $gap_cond.min_gap
-            --max_gap $gap_cond.max_gap
-        #end if
-       --position_type $position_type
+      --gap_type $gap_cond.gap_type
+      #if $gap_cond.gap_type == "ungapped"
+          --k $gap_cond.k
+      #end if
+      #if $gap_cond.gap_type == "gapped"
+          --k_left $gap_cond.k_left
+          --k_right $gap_cond.k_right
+          --min_gap $gap_cond.min_gap
+          --max_gap $gap_cond.max_gap
+      #end if
+     --position_type $position_type
 
-       && cp ${specs.files_path}/specs.yaml yaml_copy &&
+      && cp ./receptor_classification.yaml ${specs} &&
 
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainMLModel
+      immune-ml ./receptor_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel
 
       && mv ${html_outfile.files_path}/index.html ${html_outfile}
-      && mv ${specs.files_path}/specs.yaml ${specs}
       && mv ${html_outfile.files_path}/immuneML_output.zip $archive
       && mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
       ]]>
