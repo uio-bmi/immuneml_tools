@@ -2,14 +2,15 @@
   <command><![CDATA[
       source /storage/iml_env/bin/activate &&
 
+      cp "$generative_model" ./imported_generative_model.zip &&
+
       python3 '$__tool_directory__/build_apply_gen_model_specs.py'
-      --output_path . --file_name specs.yaml --ml_config_path ml_config_path --gen_example_count $gen_example_count
+      --output_path . --file_name apply_gen_model.yaml --ml_config_path ./imported_generative_model.zip --gen_example_count $gen_example_count
       #for $report_name in $reports
         --"$report_name" True
       #end for
 
-
-      && mv ./specs.yaml apply_gen_model.yaml &&
+      && cp ./apply_gen_model.yaml ${specs} &&
       immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
@@ -17,7 +18,7 @@
       ]]>
   </command>
   <inputs>
-     <param name="ml_config_path" type="data" format="zip" label="Trained generative model as a zip file" />
+     <param name="generative_model" type="data" format="zip" label="Trained generative model as a zip file" />
      <param name="gen_example_count" type="integer" value="100" label="Number of examples to generate" />
      <param name="reports" type="select" label="Which reports would you like to include?" help="" display="checkboxes" multiple="true">
        <option value="sequence_length_report">Sequence length distribution</option>
@@ -26,16 +27,16 @@
      </param>
   </inputs>
     <outputs>
-        <data format="html" name="html_outfile" label="Summary: Generated dataset"/>
+        <data format="txt" name="specs" label="apply_gen_model.yaml"/>
         <data format="zip" name="archive" label="Archive: Generated dataset"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="Generated dataset overview"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
     </outputs>
 
 
     <help><![CDATA[
 
-        This Galaxy tool allows users to use the trained generative model to generate new examples. Optionally, it can
-        provide some reports of the generated data or of the model used for generation.
+        This Galaxy tool allows users to use the trained generative model to generate new examples.
+        Optionally, it can provide some reports of the generated data or of the model used for generation.
 
         **Tool output**
 

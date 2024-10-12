@@ -1,0 +1,47 @@
+<tool id="immuneml_apply_ml_model" name="Apply machine learning models" version="@VERSION@.0">
+    <description></description>
+    <!--    <macros>-->
+    <!--        <import>prod_macros.xml</import>-->
+    <!--    </macros>-->
+    <!--    <expand macro="requirements" />-->
+    <command><![CDATA[
+      source /storage/iml_env/bin/activate &&
+
+      #if $iml_input
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+	     (mv repertoires/* . &>/dev/null || :) &&
+	     rm -rf repertoires &&
+      #end if
+
+      cp "$trained_model" ./imported_ml_settings.zip &&
+
+      python '$__tool_directory__/build_ml_application_yaml_wrapper.py'
+      --output_path . --file_name apply_ml_model.yaml --trained_model ./imported_ml_settings.zip &&
+
+      cp ./apply_ml_model.yaml ${specs} &&
+
+      immune-ml ./apply_ml_model.yaml ${html_outfile.files_path} --tool GalaxyYamlTool &&
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      ]]>
+    </command>
+    <inputs>
+        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="false" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+        <param name="trained_model" type="data" format="zip" label="Trained ML model (zip)" optional="false"/>
+    </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="apply_ml_model.yaml"/>
+        <data format="zip" name="archive" label="Archive: ML model application"/>
+        <data format="html" name="html_outfile" label="Summary: ML model application"/>
+    </outputs>
+
+
+    <help><![CDATA[
+
+        dadf
+        **Tool output**
+
+
+    ]]></help>
+
+</tool>
