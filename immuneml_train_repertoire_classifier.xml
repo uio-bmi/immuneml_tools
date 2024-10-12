@@ -49,7 +49,7 @@
 
     && cp ./repertoire_classification.yaml ${specs} &&
 
-    immune-ml ./repertoire_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel
+    immune-ml ./repertoire_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel || echo "immuneML failed"
 
     && mv ${html_outfile.files_path}/index.html ${html_outfile}
     && mv ${html_outfile.files_path}/immuneML_output.zip $archive

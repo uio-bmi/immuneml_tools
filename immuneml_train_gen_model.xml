@@ -30,11 +30,11 @@
         #end if
 
         && cp ./train_generative_model.yaml ${specs} &&
-        immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel &&
+        immune-ml ./train_generative_model.yaml ${html_outfile.files_path} --tool GalaxyTrainGenModel || echo "immuneML failed" &&
 
         mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-        mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model} &&
-        mv ${html_outfile.files_path}/immuneML_output.zip $archive
+        mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+        mv ${html_outfile.files_path}/exported_models/*.zip ${generative_model}
         ]]>
     </command>
 

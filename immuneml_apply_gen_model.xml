@@ -11,7 +11,7 @@
       #end for
 
       && cp ./apply_gen_model.yaml ${specs} &&
-      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool &&
+      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool || echo "immuneML failed" &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive

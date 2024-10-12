@@ -22,10 +22,10 @@
       #end if
 
       cp "$yaml_input" specs.yaml &&
-      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel &&
+      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel || echo "immuneML failed" &&
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
       ]]>
   </command>
   <inputs>

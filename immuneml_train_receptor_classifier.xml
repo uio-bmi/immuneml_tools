@@ -43,7 +43,7 @@
 
       && cp ./receptor_classification.yaml ${specs} &&
 
-      immune-ml ./receptor_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel
+      immune-ml ./receptor_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel || echo "immuneML failed"
 
       && mv ${html_outfile.files_path}/index.html ${html_outfile}
       && mv ${html_outfile.files_path}/immuneML_output.zip $archive

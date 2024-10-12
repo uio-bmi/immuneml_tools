@@ -20,7 +20,7 @@
 
       cp ./apply_ml_model.yaml ${specs} &&
 
-      immune-ml ./apply_ml_model.yaml ${html_outfile.files_path} --tool GalaxyYamlTool &&
+      immune-ml ./apply_ml_model.yaml ${html_outfile.files_path} --tool GalaxyYamlTool || echo "immuneML failed" &&
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>

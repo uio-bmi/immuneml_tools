@@ -58,7 +58,7 @@
 
       && cp ./create_dataset.yaml ${specs} &&
 
-      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool &&
+      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool || echo "immuneML failed" &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive

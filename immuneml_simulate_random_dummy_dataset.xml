@@ -21,7 +21,7 @@
       #end if
 
       cp ./simulate_dummy_dataset.yaml ${specs} &&
-      immune-ml ./simulate_dummy_dataset.yaml ${html_outfile.files_path} --tool DataSimulationTool &&
+      immune-ml ./simulate_dummy_dataset.yaml ${html_outfile.files_path} --tool DataSimulationTool || echo "immuneML failed" &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive

@@ -1,19 +1,19 @@
-<tool id="immuneml_simulation" name="Simulate immune events with LIgO" version="@VERSION@.0">
+<tool id="immuneml_simulate_ligo_events" name="Simulate Immune Events with LIgO" version="@VERSION@.0">
   <description></description>
-    <macros>
-        <import>prod_macros.xml</import>
-    </macros>
-    <expand macro="requirements" />
+<!--    <macros>-->
+<!--        <import>prod_macros.xml</import>-->
+<!--    </macros>-->
+<!--    <expand macro="requirements" />-->
   <command><![CDATA[
  
       #if $iml_input
          cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
-	 (mv repertoires/* . &>/dev/null || :) &&
-	 rm -rf repertoires &&
+	     (mv repertoires/* . &>/dev/null || :) &&
+	     rm -rf repertoires &&
       #end if
       
-      cp "$yaml_input" yaml_copy &&
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxySimulationTool &&
+      cp "$yaml_input" specs.yaml &&
+      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxySimulationTool || echo "immuneML failed" &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} && 
       mv ${html_outfile.files_path}/immuneML_output.zip $archive 
