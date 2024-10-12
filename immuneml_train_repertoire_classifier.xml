@@ -5,6 +5,7 @@
 <!--    </macros>-->
 <!--    <expand macro="requirements" />-->
     <command><![CDATA[
+    source /storage/iml_env/bin/activate &&
 
     #if $iml_input
        cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
