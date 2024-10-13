@@ -5,30 +5,86 @@
 <!--    </macros>-->
 <!--    <expand macro="requirements" />-->
   <command><![CDATA[
- 
-      #if $iml_input
-         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
-	     (mv repertoires/* . &>/dev/null || :) &&
-	     rm -rf repertoires &&
+      source /storage/iml_env/bin/activate &&
+
+      #if $interface_cond.interface_type == "yaml"
+        cp $yaml_input simulate_ligo.yaml
+      #else
+        python3 '$__tool_directory__/build_ligo_yaml_wrapper.py'
+        --output_path . --file_name simulate_ligo.yaml --motif_seed $interface_cond.motif_seed
+        --chain_type $interface_cond.chain_type --example_with_motif_count $interface_cond.dataset_cond.example_with_motif_count
+        --example_without_motif_count $interface_cond.dataset_cond.example_without_motif_count --simulation_strategy $interface_cond.simulation_strategy --dataset_type $interface_cond.dataset_cond.dataset_type
+        #if $interface_cond.dataset_cond.repertoire_size
+        --repertoire_size "$interface_cond.dataset_cond.repertoire_size"
+        #end if
+        #if $interface_cond.dataset_cond.signal_percentage
+        --signal_percentage $interface_cond.dataset_cond.signal_percentage
+        #end if
       #end if
-      
-      cp "$yaml_input" specs.yaml &&
-      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxySimulationTool || echo "immuneML failed" &&
 
-      mv ${html_outfile.files_path}/index.html ${html_outfile} && 
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive 
+      && cp ./simulate_ligo.yaml ${specs} &&
+      immune-ml ./simulate_ligo.yaml ${html_outfile.files_path} --tool GalaxySimulationTool || echo "immuneML failed" &&
 
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
       ]]>
   </command>
-  <inputs>
-      <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="true" help="This field accepts datasets in the ImmuneML format, as created by the Create Dataset tool."/>
-      <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-  </inputs>
+    <inputs>
+        <conditional name="interface_cond">
+            <param type="select" name="interface_type" label="How would you like to define your simulation parameters?" display="radio"
+                   help="">
+                <option value="buttons">Button-based interface</option>
+                <option value="yaml">YAML specification (full control over parameters)</option>
+            </param>
+            <when value="buttons">
+                <param type="text" name="motif_seed" optional="false" value="AAA" label="Motif seed to implant" help=""/>
+
+                <conditional name="dataset_cond">
+                    <param type="select" name="dataset_type" label="What type of dataset would you like to simulate?" display="radio"
+                    help="">
+                        <option value="repertoire">Repertoire dataset</option>
+                        <option value="sequence">Sequence dataset (single chain)</option>
+                    </param>
+                    <when value="repertoire">
+                        <param type="integer" name="example_with_motif_count" optional="false"  label="How many repertoires to simulate that contain the motif?" value="10" min="1"/>
+                        <param type="integer" name="example_without_motif_count" optional="false"  label="How many repertoires to simulate that do NOT contain the motif?" value="10" min="1"/>
+                        <param type="integer" name="repertoire_size" optional="false"  label="How many sequences to simulate per repertoire?" value="1000" min="1"/>
+                        <param type="float" name="signal_percentage" optional="false"  label="What percentage of the sequences in the repertoire should contain the motif?" value="2"/>
+                    </when>
+                    <when value="sequence">
+                        <param type="integer" name="example_with_motif_count" optional="false"  label="How many sequences to simulate that contain the motif?" value="100" min="1"/>
+                        <param type="integer" name="example_without_motif_count" optional="false"  label="How many sequences to simulate that do NOT contain the motif?" value="100" min="1"/>
+                    </when>
+                </conditional>
+
+                <param type="select" name="chain_type" label="Which chain type to simulate?" display="radio"
+                   help="Background sequences are generated using OLGA. The chain type determines which default OLGA model is internally used.">
+                    <option value="humanTRB">T cell receptor beta</option>
+                    <option value="humanTRA">T cell receptor alpha</option>
+                    <option value="humanIGH">Antibody heavy chain</option>
+                    <option value="humanIGL">Antibody light chain</option>
+                    <option value="humanIGK">Antibody kappa chain</option>
+                </param>
+
+                <param type="select" name="simulation_strategy" label="Which simulation strategy to use?" display="radio"
+                   help="When implanting motifs directly into the original sequence, the natural structure of the sequence may get distorted.
+                   With rejection sampling, instead, a large number of sequences is generated and only those naturally
+                   containing the given motif are kept. Rejection sampling may therefore be more biologically accurate,
+                   but is far slower. ">
+                    <option value="Implanting">Implanting</option>
+                    <option value="RejectionSampling">Rejection sampling</option>
+                </param>
+            </when>
+            <when value="yaml">
+                <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+            </when>
+        </conditional>
+    </inputs>
     <outputs>
+        <data format="txt" name="specs" label="simulate_ligo.yaml"/>
         <data format="zip" name="archive" label="Archive: immune signal simulation"/>
         <data format="immuneml_receptors.html" name="html_outfile" label="Simulated immuneML dataset"/>
     </outputs>
-
 
   <help><![CDATA[
 
