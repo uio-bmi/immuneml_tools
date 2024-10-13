@@ -14,10 +14,8 @@
         --output_path . --file_name simulate_ligo.yaml --motif_seed $interface_cond.motif_seed
         --chain_type $interface_cond.chain_type --example_with_motif_count $interface_cond.dataset_cond.example_with_motif_count
         --example_without_motif_count $interface_cond.dataset_cond.example_without_motif_count --simulation_strategy $interface_cond.simulation_strategy --dataset_type $interface_cond.dataset_cond.dataset_type
-        #if $interface_cond.dataset_cond.repertoire_size
+        #if $interface_cond.dataset_cond.dataset_type == "repertoire"
         --repertoire_size "$interface_cond.dataset_cond.repertoire_size"
-        #end if
-        #if $interface_cond.dataset_cond.signal_percentage
         --signal_percentage $interface_cond.dataset_cond.signal_percentage
         #end if
       #end if
