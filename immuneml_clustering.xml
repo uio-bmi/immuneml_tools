@@ -1,0 +1,97 @@
+<tool id="immuneml_clustering" name="Clustering" version="@VERSION@.0">
+    <description></description>
+    <!--    <macros>-->
+    <!--        <import>prod_macros.xml</import>-->
+    <!--    </macros>-->
+    <!--    <expand macro="requirements" />-->
+    <command><![CDATA[
+      source /storage/iml_env/bin/activate &&
+
+      #if $iml_input
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+	     (mv repertoires/* . &>/dev/null || :) &&
+	     rm -rf repertoires &&
+      #end if
+
+      python '$__tool_directory__/build_clustering_yaml_wrapper.py'
+      --output_path . --file_name clustering.yaml --encoding_k $encoding_k --n_clusters $n_clusters
+      #if $dim_red_method
+          --dim_red_method $dim_red_method
+      #end if
+      #if $include_label_cond.eval_metrics
+          #set eval_metrics_splitted = str($include_label_cond.eval_metrics).replace(",", " ")
+          --eval_metrics $eval_metrics_splitted
+      #end if
+      #if $include_label_cond.include_label == "Yes"
+          --labels "$include_label_cond.labels"
+      #end if
+
+      && cp ./clustering.yaml ${specs} &&
+
+      immune-ml ./clustering.yaml ${html_outfile.files_path} --tool GalaxyYamlTool || echo "immuneML failed" &&
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      ]]>
+    </command>
+    <inputs>
+        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="false" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+
+        <conditional name="include_label_cond">
+            <param type="select" name="include_label" label="Would you like to include label information to assess clustering performance?" help="" display="radio">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </param>
+            <when value="Yes">
+                <param type="text" name="labels" optional="false" label="Name of the label to compare clustering performance to:"/>
+                <param type="select" name="eval_metrics" label="Which performance metrics would you like to compute?" help="Internal evaluation scores ignore label values evaluate clusters, external evaluation scores compare the found custers to label classes." display="checkboxes" multiple="true">
+                  <option value="silhouette_score">Silhouette score (internal)</option>
+<!--                  <option value="davies_bouldin_score">Davies-Bouldin score (internal)</option>-->
+<!--                  <option value="calinski_harabasz_score">Calinski-Harabasz score (internal)</option>-->
+                  <option value="rand_score">Rand Index (external)</option>
+                  <option value="adjusted_rand_score">Adjusted Rand Index (external)</option>
+                  <option value="mutual_info_score">Mutual Information (external)</option>
+                  <option value="adjusted_mutual_info_score">Adjusted Mutual Information (external)</option>
+                  <option value="normalized_mutual_info_score">Normalized Mutual Information (external)</option>
+                  <option value="completeness_score">Completeness score (external)</option>
+                  <option value="fowlkes_mallows_score">Fowlkes-Mallows Index (external)</option>
+                  <option value="homogeneity_score">Homogeneity score (external)</option>
+                  <option value="v_measure_score">V-measure (external)</option>
+                </param>
+            </when>
+            <when value="No">
+                <param type="select" name="eval_metrics" label="Which performance metrics would you like to compute?" help="" display="checkboxes" multiple="true">
+                  <option value="silhouette_score">Silhouette score</option>
+<!--                  <option value="davies_bouldin_score">Davies-Bouldin score</option>-->
+<!--                  <option value="calinski_harabasz_score">Calinski-Harabasz score</option>-->
+                </param>
+            </when>
+        </conditional>
+
+        <param type="integer" name="encoding_k" label="k-mer length" value="3" min="1" help=""/>
+
+        <param type="select" name="dim_red_method" label="Which dimensionality reduction method would you like to apply?" help="" display="radio">
+          <option value="PCA">Principal component analysis (PCA) with 2 components</option>
+          <option value="TSNE">T-distributed Stochastic Neighbor Embedding (T-SNE) with 2 components</option>
+          <option value="UMAP">Uniform manifold approximation and projection (UMAP) with 2 components</option>
+          <option value="None">No dimensionality reduction</option>
+        </param>
+
+        <param type="integer" name="n_clusters" label="Clustering will be performed using k-means clustering. How many clusters to look for?" value="2" min="2" help="If a label is available, it is recommended to choose a number of clusters that matches the number of classes for the given label."/>
+
+    </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="clustering.yaml"/>
+        <data format="zip" name="archive" label="Archive: Clustering"/>
+        <data format="html" name="html_outfile" label="Summary: Clustering"/>
+    </outputs>
+
+
+    <help><![CDATA[
+
+        dadf
+        **Tool output**
+
+
+    ]]></help>
+
+</tool>
