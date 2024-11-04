@@ -13,7 +13,7 @@
          rm -rf repertoires &&
       #end if
 
-      python '$__tool_directory__/build_yaml_from_arguments_wrapper.py'
+      python '$__tool_directory__/build_train_ml_model_yaml.py'
       --output_path . --file_name receptor_classification.yaml
       #if $labels
           --labels "$labels"
