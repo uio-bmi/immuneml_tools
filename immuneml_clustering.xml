@@ -14,7 +14,7 @@
       #end if
 
       python '$__tool_directory__/build_clustering_yaml_wrapper.py'
-      --output_path . --file_name clustering.yaml --encoding_k $encoding_k --n_clusters $n_clusters
+      --output_path . --file_name clustering.yaml --encoding_k $encoding_k --n_clusters $n_clusters --training_percentage $training_percentage
       #if $dim_red_method
           --dim_red_method $dim_red_method
       #end if
@@ -77,6 +77,7 @@
         </param>
 
         <param type="integer" name="n_clusters" label="Clustering will be performed using k-means clustering. How many clusters to look for?" value="2" min="2" help="If a label is available, it is recommended to choose a number of clusters that matches the number of classes for the given label."/>
+        <param type="integer" name="training_percentage" label="Percentage of data that is used for cluster discovery. The remaining data is left out and used for independent validation." value="100" min="50" max="100" help=""/>
 
     </inputs>
     <outputs>
