@@ -89,7 +89,7 @@
     <outputs>
         <data format="txt" name="specs" label="train_generative_model.yaml"/>
         <data format="zip" name="generative_model" label="generative_model.zip"/>
-        <data format="zip" name="archive" label="Archive: generative model training"/>
+        <data format="zip" name="archive" label="Archive: Train Generative Model"/>
         <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
     </outputs>
 
@@ -100,26 +100,28 @@
           to generate synthetic datasets.
           Optionally, it can provide some reports of the generated data or of the model used for generation.
 
-          For full documentation, see https://docs.immuneml.uio.no/.
+          This runs the immuneML TrainGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#traingenmodel>`_ for details)
 
           **Tool output**
 
           This Galaxy tool will produce the following history elements:
 
-          - ImmuneML dataset (generative model): The exported dataset from the generative model (containing either the
+          - ImmuneML dataset (from generative model): The exported dataset from the generative model (containing either the
             generated sequences, or the combined set of input and generated sequences, depending on what setting was selected).
             This dataset can be used as an input for other tools. The dataset furthermore contains an HTML summary with
             all report results.
 
-          - Archive: Generative model training: a .zip file containing the complete output folder as it was produced by immuneML.
+          - Archive: Train Generative Model: a .zip file containing the complete output folder as it was produced by immuneML.
             This folder contains the output of the TrainGenModel instruction, including the exported model and intermediate datasets.
             Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
           - trained_model.zip: a zip file containing the raw files for the generative model.
-            This zip file can subsequently be used as an input when applying the generative model to generate more data.
+            This zip file can subsequently be used as an input when applying the generative model to generate more data,
+            using the `Apply Generative Model <root?tool_id=immuneml_apply_gen_model>`_ tool.
 
-          - train_generative_model.yaml: the YAML specification file that was used by immuneML to train generative models.
-            This file can be downloaded and altered (for example to use advanced parameters).
+          - train_generative_model.yaml: the YAML specification file that was used by immuneML to train the generative model.
+            This file can be altered to add more advanced parameters (use the 'YAML specification (full control over parameters)' option),
+            or downloaded to run on the command line.
 
         ]]>
 

@@ -1,4 +1,4 @@
-<tool id="immuneml_apply_ml_model" name="Apply machine learning models" version="@VERSION@.0">
+<tool id="immuneml_apply_ml_model" name="Apply ML Classifier" version="@VERSION@.0">
     <description></description>
     <!--    <macros>-->
     <!--        <import>prod_macros.xml</import>-->
@@ -31,16 +31,31 @@
     </inputs>
     <outputs>
         <data format="txt" name="specs" label="apply_ml_model.yaml"/>
-        <data format="zip" name="archive" label="Archive: ML model application"/>
-        <data format="html" name="html_outfile" label="Summary: ML model application"/>
+        <data format="zip" name="archive" label="Archive: Apply ML Classifier"/>
+        <data format="html" name="html_outfile" label="Summary: Apply ML Classifier"/>
     </outputs>
 
 
     <help><![CDATA[
 
-        dadf
+        This Galaxy tool allows users to apply a previously trained ML model (as done by the
+        `Train ML Classifiers <root?tool_id=immuneml_train_ml_model>`_ tool) to a new dataset.
+
+        This runs the immuneML MLApplication instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#mlapplication>`_ for details)
+
+
         **Tool output**
 
+        This Galaxy tool will produce the following history elements:
+
+        - Summary: Apply ML Classifier: a HTML page that allows you to browse through all results.
+
+        - Archive: Apply ML Classifier: a .zip file containing the complete output folder as it was produced by immuneML.
+          This folder contains the raw immuneML dataset files, optional report results and log file.
+
+        - apply_ml_model.yaml: the YAML specification file that was used by immuneML to apply the ML model.
+          This file can be altered to add more advanced parameters (use the `Run immuneML with any YAML specification <root?tool_id=immuneml_yaml>`_ tool),
+          or downloaded to run on the command line.
 
     ]]></help>
 

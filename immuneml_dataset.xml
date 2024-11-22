@@ -244,8 +244,8 @@
           This folder contains the raw immuneML dataset files, optional report results and log file.
 
         - create_dataset.yaml: the YAML specification file that was used by immuneML to create the dataset.
-          This file can be downloaded and altered (for example to use non-standard import parameters),
-          and run again using the 'Advanced' interface.
+          This file can be altered to add more advanced parameters (for 'Advanced data import through YAML specification'),
+          or downloaded to run on the command line.
 
     ]]>
     </help>

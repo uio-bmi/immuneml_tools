@@ -116,6 +116,10 @@
           contains the output of the LigoSim instruction including all raw data files.
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
+        - simulate_ligo.yaml: the YAML specification file that was used by immuneML to perform the LIgO simulation.
+          This file can be altered to add more advanced parameters (use the 'YAML specification (full control over parameters)' option),
+          or downloaded to run on the command line.
+
 
     ]]>
   </help>

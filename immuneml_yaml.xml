@@ -44,15 +44,13 @@
 
         This Galaxy tool can be used to run any possible YAML-based immuneML analysis in Galaxy.
 
-        It is typically recommended to use the analysis-specific Galaxy tools for
-        `creating datasets <root?tool_id=immune_ml_dataset>`_,
-        `simulating synthetic data <root?tool_id=immuneml_simulate_dataset>`_,
-        `implanting synthetic immune signals <root?tool_id=immuneml_simulation>`_ or
-        `training <root?tool_id=immuneml_train_ml_model>`_ ML models instead of this tool.
-        These other tools are able to export the relevant output files to Galaxy history elements.
-
-        However, when you want to run the `ExploratoryAnalysis <https://docs.immuneml.uio.no/latest/specification.html#exploratoryanalysis>`_ instruction,
-        or other analyses that do not have a corresponding Galaxy tool, this generic tool can be used.
+        When you want to run the `ExploratoryAnalysis <https://docs.immuneml.uio.no/latest/specification.html#exploratoryanalysis>`_ instruction,
+        or other analyses that do not have a corresponding Galaxy tool, this generic YAML tool can be used.
+        Note that for most applications it is recommended to use the analysis-specific Galaxy tools (e.g., for
+        `creating datasets <root?tool_id=immune_ml_dataset>`_, simulating synthetic `data <root?tool_id=immuneml_simulate_dataset>`_ or
+        `immune signals <root?tool_id=immuneml_simulate_ligo_events>`_, training machine learning
+        `classifiers <root?tool_id=immuneml_train_ml_model>`_ or `generative models <root?tool_id=immuneml_train_gen_model>`_)
+        These other tools are able to export the relevant output to Galaxy history elements.
 
         For the exhaustive documentation of this tool and an example YAML specification for exploratory analysis, see the tutorial `How to run any AIRR ML analysis in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_general_yaml.html>`_.
 

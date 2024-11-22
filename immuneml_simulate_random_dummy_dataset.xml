@@ -92,22 +92,13 @@
     <help><![CDATA[
 
         This Galaxy tool allows you to quickly make a dummy dataset.
-        The tool generates a SequenceDataset, ReceptorDataset or RepertoireDataset consisting of random CDR3 sequences, which could be used for benchmarking machine learning methods or encodings,
-        or testing out other functionalities.
-        The amino acids in the sequences are chosen from a uniform random distribution, and there is no underlying structure in the sequences.
-
-        You can control:
-
-        - The amount of examples (repertoires, sequences or receptors) in the dataset
-
-        - Labels, which can be used as a target when training ML models
-
-        - When using the YAML-based interface, sequence lengths can be defined
+        The tool generates a dataset (consisting of single-chain sequences, paired-chain receptors, or repertoires) consisting
+        of randomly generated CDR3 sequences. This can be used to quickly test out other functionalities.
 
         Note that since these labels are randomly assigned, they do not bear any meaning and it is not possible to train a ML model with high classification accuracy on this data.
-        Meaningful labels can be added using the `Simulate immune events into existing repertoire/receptor dataset <root?tool_id=immuneml_simulation>`_ Galaxy tool.
+        Meaningful signals and labels can be added using the `Simulate Immune Events with LIgO <root?tool_id=immuneml_simulate_ligo_events>`_ tool.
+        Alternatively, more realistic synthetic datasets can be created using the `Train Generative Model <root?tool_id=train_gen_model>`_ tool.
 
-        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate an AIRR dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_dataset.html>`_.
 
         **Tool output**
 
@@ -120,6 +111,9 @@
           contains the output of the DatasetExport instruction including raw data files.
           Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
+        - simulate_dummy_dataset.yaml: the YAML specification file that was used by immuneML to generate the random data.
+          This file can be altered to add more advanced parameters (use the 'YAML specification (full control over parameters)' option),
+          or downloaded to run on the command line.
     ]]>
     </help>
 
