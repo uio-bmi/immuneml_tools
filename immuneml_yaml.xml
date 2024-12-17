@@ -52,7 +52,7 @@
         `classifiers <root?tool_id=immuneml_train_ml_model>`_ or `generative models <root?tool_id=immuneml_train_gen_model>`_)
         These other tools are able to export the relevant output to Galaxy history elements.
 
-        For the exhaustive documentation of this tool and an example YAML specification for exploratory analysis, see the tutorial `How to run any AIRR ML analysis in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_general_yaml.html>`_.
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
 
 
         **Tool output**

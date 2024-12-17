@@ -99,7 +99,7 @@
         Alternatively, if you want to predict a property per immune repertoire, such as disease status, check out the
         `Train immune repertoire classifiers (simplified interface) <root?tool_id=novice_immuneml_interface>`_ tool instead.
 
-        The full documentation can be found `here <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simple_receptors.html>`_.
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
 
         **Basic terminology**
 

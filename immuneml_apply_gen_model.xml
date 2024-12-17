@@ -39,7 +39,8 @@
         `Train Generative Model <root?tool_id=immuneml_train_gen_model>`_ tool) to generate new examples.
         Optionally, it can provide some reports of the generated data or of the model used for generation.
 
-        This runs the immuneML ApplyGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#applygenmodel>`_ for details)
+        This tool runs the immuneML ApplyGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#applygenmodel>`_ for details).
+	    See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
 
         **Tool output**

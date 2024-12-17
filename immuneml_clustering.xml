@@ -96,9 +96,10 @@
 	flexibility, please see the documentation for the clustering instruction and use Run immuneML with YAML tool or
 	immuneML from the command line.
 
-	Clustering documentation is available at: https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#clustering.
+	This tool runs the immuneML Clustering instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#clustering>`_ for details).
+	See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
-        **Tool output**
+    **Tool output**
 
 	This Galaxy tool will produce the following history elements:
 

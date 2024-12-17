@@ -49,8 +49,8 @@
       see `Train immune receptor classifiers (easy interface) <root?tool_id=immuneml_train_classifiers>`_ and
       `Train immune repertoire classifiers (easy interface) <root?tool_id=novice_immuneml_interface>`_.
 
-      This runs the immuneML TrainMLModel instruction (see `the instruction documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#trainmlmodel>`_ and
-       `the immuneML & Galaxy tutorial <https://docs.immuneml.uio.no/latest/galaxy/galaxy_train_ml_models.html>`_ for details)
+      This tool runs the immuneML TrainMLModel instruction (see `the instruction documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#trainmlmodel>`_ for details).
+      See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
       **Tool output**
 

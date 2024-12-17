@@ -99,6 +99,7 @@
         Meaningful signals and labels can be added using the `Simulate Immune Events with LIgO <root?tool_id=immuneml_simulate_ligo_events>`_ tool.
         Alternatively, more realistic synthetic datasets can be created using the `Train Generative Model <root?tool_id=train_gen_model>`_ tool.
 
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
 
         **Tool output**
 
