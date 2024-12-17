@@ -1,4 +1,4 @@
-<tool id="immuneml_clustering" name="Clustering" version="@VERSION@.0">
+<tool id="immuneml_clustering" name="Cluster AIR(R) Datasets" version="@VERSION@.0">
     <description></description>
     <!--    <macros>-->
     <!--        <import>prod_macros.xml</import>-->
@@ -67,9 +67,9 @@
             </when>
         </conditional>
 
-        <param type="integer" name="encoding_k" label="k-mer length" value="3" min="1" help=""/>
+        <param type="integer" name="encoding_k" label="Which k-mer length should be used for encoding the data?" value="3" min="1" help="In this tool, the data encoding is always via k-mer frequencies. For alternative encodings and more flexibility, see Run immuneML with YAML tool."/>
 
-        <param type="select" name="dim_red_method" label="Which dimensionality reduction method would you like to apply?" help="" display="radio">
+        <param type="select" name="dim_red_method" label="Which dimensionality reduction method would you like to apply for the visualization of results?" help="" display="radio">
           <option value="PCA">Principal component analysis (PCA) with 2 components</option>
           <option value="TSNE">T-distributed Stochastic Neighbor Embedding (T-SNE) with 2 components</option>
           <option value="UMAP">Uniform manifold approximation and projection (UMAP) with 2 components</option>
@@ -77,7 +77,7 @@
         </param>
 
         <param type="integer" name="n_clusters" label="Clustering will be performed using k-means clustering. How many clusters to look for?" value="2" min="2" help="If a label is available, it is recommended to choose a number of clusters that matches the number of classes for the given label."/>
-        <param type="integer" name="training_percentage" label="Percentage of data that is used for cluster discovery. The remaining data is left out and used for independent validation." value="100" min="50" max="100" help=""/>
+        <param type="integer" name="training_percentage" label="Percentage of data that is used for cluster discovery. The remaining data is left out and used for independent validation." value="50" min="50" max="100" help=""/>
 
     </inputs>
     <outputs>
@@ -86,27 +86,27 @@
         <data format="html" name="html_outfile" label="Summary: Clustering"/>
     </outputs>
 
-
     <help><![CDATA[
 
-        This Galaxy tool allows users to apply unsupervised clustering to a dataset.
+	This Clustering tool uses the provided dataset to fit a clustering method and evaluates the clustering to a
+	predefined set of metrics. The dataset is split into discovery and validation datasets and the clustering results
+	are reported on both. It also provides options to include a visualization of the results.
 
-        This runs the immuneML Clustering instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#clustering>`_ for details)
+	The Clustering tool has a fixed clustering algorithm (k-means) and data encoding (k-mer frequencies). For more
+	flexibility, please see the documentation for the clustering instruction and use Run immuneML with YAML tool or
+	immuneML from the command line.
 
+	Clustering documentation is available at: https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#clustering.
 
         **Tool output**
 
-        This Galaxy tool will produce the following history elements:
+	This Galaxy tool will produce the following history elements:
 
-        - Summary: Clustering: a HTML page that allows you to browse through all results.
+	- Summary: immuneML analysis: an HTML page for browsing through all results.
 
-        - Archive: Clustering: a .zip file containing the complete output folder as it was produced by immuneML.
-          This folder contains the raw immuneML dataset files, optional report results and log file.
+	- immuneML Analysis Archive: a .zip file containing the complete output folder as it was produced by immuneML.
 
-        - clustering.yaml: the YAML specification file that was used by immuneML to perform the clustering.
-          This file can be altered to add more advanced parameters (use the `Run immuneML with any YAML specification <root?tool_id=immuneml_yaml>`_ tool),
-          or downloaded to run on the command line.
-
+	- clustering.yaml: a full YAML specification of the performed analysis.
 
     ]]></help>
 
