@@ -1,9 +1,9 @@
 <macros>
-    <token name="@VERSION@">3.x</token>
+    <token name="@VERSION@">3.0.3</token>
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="@VERSION@">immuneML</requirement>
-            <yield/>
+            <requirement type="package" version="3.10.*">python</requirement>
         </requirements>
     </xml>
 </macros>

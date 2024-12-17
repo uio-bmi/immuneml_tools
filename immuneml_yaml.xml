@@ -1,43 +1,56 @@
 <tool id="immuneml_yaml" name="Run immuneML with any YAML specification" version="@VERSION@.0">
-  <description></description>
-<!--    <macros>-->
-<!--        <import>prod_macros.xml</import>-->
-<!--    </macros>-->
-<!--    <expand macro="requirements" />-->
-  <command><![CDATA[
-	  source /storage/iml_env/bin/activate &&
+    <description>Run immuneML analyses using YAML specifications</description>
 
-      #if $iml_input
-         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
-	     (mv repertoires/* . &>/dev/null || :) &&
-	     rm -rf repertoires &&
-      #end if
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
 
-      #set $input_orig_names = []
-      #if $data_input
-          #for $input in $data_input
-             #set input_orig_names += [str($input.element_identifier)]
-             ([ -e ./"$input.element_identifier" ] && echo "File '$input.element_identifier' already exists in the input folder, skipping." || ln -s $input "$input.element_identifier") &&
-          #end for#
-      #end if
+    <expand macro="requirements" />
 
-      cp "$yaml_input" specs.yaml &&
-      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyYamlTool || echo "immuneML failed" &&
-      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
 
-      ]]>
-  </command>
-  <inputs>
-      <param name="iml_input" type="data"  format="immuneml_receptors.html" label="immuneML dataset" optional="true" help="This field accepts ImmuneML datasets, as created by the Create Dataset tool."/>
-      <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
-      <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
-  </inputs>
+    <command><![CDATA[
+        #if $iml_input
+            cp -r ${iml_input.extra_files_path}/result/* . &&
+            (mv repertoires/* . &>/dev/null || :) &&
+            rm -rf repertoires &&
+        #end if
+
+        #set $input_orig_names = []
+        #if $data_input
+            #for $input in $data_input
+                #set input_orig_names += [str($input.element_identifier)]
+                ([ -e ./"$input.element_identifier" ] && echo "File '$input.element_identifier' already exists in the input folder, skipping." || ln -s $input "$input.element_identifier") &&
+            #end for#
+        #end if
+
+        cp "$yaml_input" specs.yaml &&
+        immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyYamlTool &&
+        mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+        mv ${html_outfile.files_path}/immuneML_output.zip $archive
+    ]]>
+    </command>
+
+    <inputs>
+        <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true" help="This field accepts ImmuneML datasets, as created by the Create Dataset tool."/>
+        <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+        <param name="data_input" type="data" format="txt" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data, and others."/>
+    </inputs>
+
     <outputs>
         <data format="zip" name="archive" label="Archive: immuneML Analysis"/>
         <data format="html" name="html_outfile" label="Summary: immuneML analysis"/>
     </outputs>
 
+    <tests>
+        <test>
+            <param name="yaml_input" value="test-data/specs.yaml" />
+            <output name="archive" file="test-data/output_archive.zip" />
+            <output name="html_outfile" file="test-data/output_summary.html" />
+        </test>
+    </tests>
 
       <help><![CDATA[
 
@@ -69,4 +82,7 @@
     ]]>
     </help>
 
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 </tool>
