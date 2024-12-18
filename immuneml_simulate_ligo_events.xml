@@ -99,14 +99,15 @@
 
         The resulting dataset is fully annotated on the sequence level with immune signals and events.
 
-        For the exhaustive documentation of this tool and an example YAML specification, see the tutorial `How to simulate AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simulate_signals.html>`_.
-
         For more information on the simulation, see the original manuscript:
 
-        Chernigovskaya, M., Pavlović, M., Kanduri, C., Gielis, S., Robert, P. A., Scheffer, L., Slabodkin, A.,
-        Haff, I. H., Meysman, P., Yaari, G., Sandve, G. K., & Greiff, V. (2023). Simulation of adaptive immune
-        receptors and repertoires with complex immune information to guide the development and benchmarking of
-        AIRR machine learning (p. 2023.10.20.562936). bioRxiv. https://doi.org/10.1101/2023.10.20.562936
+        - Chernigovskaya, M., Pavlović, M., Kanduri, C., Gielis, S., Robert, P. A., Scheffer, L., Slabodkin, A.,
+          Haff, I. H., Meysman, P., Yaari, G., Sandve, G. K., & Greiff, V. (2023). Simulation of adaptive immune
+          receptors and repertoires with complex immune information to guide the development and benchmarking of
+          AIRR machine learning (p. 2023.10.20.562936). bioRxiv. https://doi.org/10.1101/2023.10.20.562936
+
+	    This tool runs the immuneML LigoSIM instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#ligosim>`_ for details).
+        See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
 
         **Tool output**

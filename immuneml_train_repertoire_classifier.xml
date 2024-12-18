@@ -123,7 +123,7 @@
         Alternatively, if you want to predict a property per immune receptor, such as antigen specificity, check out the
         `Train immune receptor classifiers (simplified interface) <root?tool_id=immuneml_train_classifiers>`_ tool instead.
 
-        The full documentation can be found `here <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simple_repertoires.html>`_.
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
 
         **Basic terminology**
 

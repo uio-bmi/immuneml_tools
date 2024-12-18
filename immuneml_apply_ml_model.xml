@@ -45,7 +45,8 @@
         This Galaxy tool allows users to apply a previously trained ML model (as done by the
         `Train ML Classifiers <root?tool_id=immuneml_train_ml_model>`_ tool) to a new dataset.
 
-        This runs the immuneML MLApplication instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#mlapplication>`_ for details)
+        This tool runs the immuneML MLApplication instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#mlapplication>`_ for details).
+	    See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
 
         **Tool output**

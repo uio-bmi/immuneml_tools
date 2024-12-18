@@ -105,7 +105,8 @@
           to generate synthetic datasets.
           Optionally, it can provide some reports of the generated data or of the model used for generation.
 
-          This runs the immuneML TrainGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#traingenmodel>`_ for details)
+          This tool runs the immuneML TrainGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#traingenmodel>`_ for details)
+	      See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
           **Tool output**
 

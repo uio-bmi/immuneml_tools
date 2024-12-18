@@ -228,12 +228,13 @@
         from the Galaxy history. Furthermore, this tool can be used to run optional analysis reports to gain insight about the dataset.
         This can be done either when importing a new dataset, or by selecting an existing dataset from the Galaxy history.
 
-        Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface. This can be done either
-        by uploading files from your local computer (use the 'Upload file' tool under the 'Get local data' menu), or by fetching
-        remote data from the iReceptor Plus Gateway or VDJdb (see `How to import remote AIRR datasets in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_import_remote_data.html>`_).
+        Before creating a dataset, the relevant data files must first be uploaded to the Galaxy interface
+        (use the 'Upload file' tool under the 'Get local data' menu). Tip: if your dataset contains many files
+        (e.g., many repertoires), you may want to consider bundling these files into a Galaxy collection and using
+        this collection as input for this tool
 
-        For the exhaustive documentation of this tool and more information about immuneML datasets, see the tutorial
-        `How to make an immuneML dataset in Galaxy <https://docs.immuneml.uio.no/latest/galaxy/galaxy_dataset.html>`_.
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
+
 
         **Tool output**
 
