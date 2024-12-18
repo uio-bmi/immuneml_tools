@@ -1,13 +1,18 @@
 <tool id="immuneml_train_gen_model" name="Train Generative Model" version="@VERSION@.0">
-    <description></description>
-<!--    <macros>-->
-<!--        <import>prod_macros.xml</import>-->
-<!--    </macros>-->
-<!--    <expand macro="requirements" />-->
+    <description>Train Generative Model</description>
+
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+
     <command>
         <![CDATA[
-        source /storage/iml_env/bin/activate &&
-
         #if $iml_input
            cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
            (mv repertoires/* . &>/dev/null || :) &&
@@ -126,5 +131,9 @@
         ]]>
 
     </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>

@@ -1,12 +1,16 @@
 <tool id="immuneml_simulate_ligo_events" name="Simulate Immune Events with LIgO" version="@VERSION@.0">
-  <description></description>
-<!--    <macros>-->
-<!--        <import>prod_macros.xml</import>-->
-<!--    </macros>-->
-<!--    <expand macro="requirements" />-->
-  <command><![CDATA[
-      source /storage/iml_env/bin/activate &&
+    <description>Simulate Immune Events with LIgO</description>
 
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+  <command><![CDATA[
       #if $interface_cond.interface_type == "yaml"
         cp $yaml_input simulate_ligo.yaml
       #else
@@ -123,5 +127,9 @@
 
     ]]>
   </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>

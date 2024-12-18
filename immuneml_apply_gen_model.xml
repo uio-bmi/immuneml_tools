@@ -1,7 +1,15 @@
 <tool id="immuneml_apply_gen_model" name="Apply Generative Model" version="0.0.1">
-  <command><![CDATA[
-      source /storage/iml_env/bin/activate &&
+    <description>Apply Generative Model</description>
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
 
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+  <command><![CDATA[
       cp "$generative_model" ./imported_generative_model.zip &&
 
       python3 '$__tool_directory__/build_apply_gen_model_specs.py'
@@ -60,5 +68,9 @@
 
     ]]>
     </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>

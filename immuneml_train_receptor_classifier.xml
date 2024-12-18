@@ -1,12 +1,17 @@
 <tool id="immuneml_train_receptor_classifier" name="Train Receptor Classifiers (Simplified Interface)" version="@VERSION@.0">
-  <description></description>
-<!--    <macros>-->
-<!--        <import>prod_macros.xml</import>-->
-<!--    </macros>-->
-<!--    <expand macro="requirements" />-->
-  <command><![CDATA[
-      source /storage/iml_env/bin/activate &&
+   <description>Train Receptor Classifiers (Simplified Interface)</description>
 
+  <macros>
+      <import>prod_macros.xml</import>
+  </macros>
+
+  <expand macro="requirements" />
+
+  <stdio>
+        <exit_code range="1:" />
+  </stdio>
+
+  <command><![CDATA[
       #if $iml_input
          cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
          (mv repertoires/* . &>/dev/null || : ) &&
@@ -49,7 +54,7 @@
       && mv ${html_outfile.files_path}/immuneML_output.zip $archive
       && mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
       ]]>
-</command>
+    </command>
     <inputs>
         <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset (immune receptors)" help="This field accepts receptor datasets in the ImmuneML dataset format, as created by the Create Dataset tool."/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the receptors would you like to predict?" help="A receptor property to predict could for example be the epitope it binds to. Such properties must be present as receptor sequence metadata. For example, when using data in VDJdb format, the default fields are named ‘epitope’, ‘epitope_gene’ and ‘epitope_species’. One of these labels must be chosen here."/>
@@ -202,5 +207,9 @@
 
     ]]>
     </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>

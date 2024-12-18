@@ -1,12 +1,16 @@
 <tool id="immuneml_dataset" name="Create Dataset with Reports" version="@VERSION@.0">
-    <description></description>
-<!--    <macros>-->
-<!--        <import>prod_macros.xml</import>-->
-<!--    </macros>-->
-<!--    <expand macro="requirements" />-->
-  <command><![CDATA[
-      source /storage/iml_env/bin/activate &&
+    <description>Create Dataset with Reports</description>
 
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+  <command><![CDATA[
       #if $import_cond.import_type == "history"
         #if $import_cond.iml_input
            cp -r ${import_cond.iml_input.extra_files_path}/galaxy_dataset/* . &&
@@ -249,5 +253,9 @@
 
     ]]>
     </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>
