@@ -1,4 +1,7 @@
-categories: 
-- "Machine Learning"
+categories:
+- Machine Learning
+description: immuneML is a platform for machine learning-based analysis and classification
+  of adaptive immune receptors and repertoires (AIRR).
 name: immuneml_tools
-owner: immuneml
+owner: pavelva
+remote_repository_url: https://immuneml.uio.no/
