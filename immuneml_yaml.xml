@@ -27,9 +27,10 @@
         #end if
 
         cp "$yaml_input" specs.yaml &&
-        immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyYamlTool &&
+        immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyYamlTool || immuneml_exit_code=\$? &&
         mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-        mv ${html_outfile.files_path}/immuneML_output.zip $archive
+        mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+        exit \$immuneml_exit_code
     ]]>
     </command>
 

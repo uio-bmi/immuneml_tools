@@ -26,11 +26,11 @@
       #end if
 
       cp ./simulate_dummy_dataset.yaml ${specs} &&
-      immune-ml ./simulate_dummy_dataset.yaml ${html_outfile.files_path} --tool DataSimulationTool ||  immuneml_exit_code=\$? &&
+      immune-ml ./simulate_dummy_dataset.yaml ${html_outfile.files_path} --tool DataSimulationTool || immuneml_exit_code=\$? &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
-      exit "\$immuneml_exit_code"
+      exit \$immuneml_exit_code
       ]]>
     </command>
     <inputs>
