@@ -19,10 +19,11 @@
       #end for
 
       && cp ./apply_gen_model.yaml ${specs} &&
-      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool || echo "immuneML failed" &&
+      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool ||  immuneml_exit_code=\$? &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit "\$immuneml_exit_code"
       ]]>
   </command>
   <inputs>

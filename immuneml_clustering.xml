@@ -32,9 +32,10 @@
 
       && cp ./clustering.yaml ${specs} &&
 
-      immune-ml ./clustering.yaml ${html_outfile.files_path} --tool GalaxyYamlTool || echo "immuneML failed" &&
+      immune-ml ./clustering.yaml ${html_outfile.files_path} --tool GalaxyYamlTool ||  immuneml_exit_code=\$? &&
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit "\$immuneml_exit_code"
       ]]>
     </command>
     <inputs>

@@ -62,10 +62,11 @@
 
       && cp ./create_dataset.yaml ${specs} &&
 
-      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool || echo "immuneML failed" &&
+      immune-ml ./create_dataset.yaml ${html_outfile.files_path} --tool DatasetGenerationOverviewTool || immuneml_exit_code=\$? &&
 
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit "\$immuneml_exit_code"
       ]]>
   </command>
   <inputs>
