@@ -1,0 +1,71 @@
+definitions:
+  datasets:
+    my_dataset:
+      format: RandomSequenceDataset
+      params:
+        sequence_count: 100
+        length_probabilities:
+          10: 0.3
+          11: 0.3
+          12: 0.3
+          13: 0.1
+        labels:
+          cancer:
+            True: 0.5
+            False: 0.5
+  encodings:
+    one_hot:
+      OneHot:
+        flatten: true
+        sequence_type: amino_acid
+        use_positional_info: false
+    kmer: KmerFrequency
+  ml_methods:
+    log_reg: LogisticRegression
+    pwm:
+      PWM:
+        locus: beta
+  reports:
+    my_seq_lengths: SequenceLengthDistribution
+instructions:
+  fit_classifier:
+    type: TrainMLModel
+    dataset: my_dataset
+    labels: [cancer]
+    settings:
+      - encoding: kmer
+        ml_method: log_reg
+      - encoding: one_hot
+        ml_method: log_reg
+    assessment:
+      split_strategy: random
+      split_count: 1
+      training_percentage: 0.7
+    selection:
+      split_strategy: random
+      split_count: 1
+      training_percentage: 0.7
+    optimization_metric: balanced_accuracy
+    metrics:
+      - auc
+      - precision
+      - recall
+    refit_optimal_model: False
+    number_of_processes: 4
+  train_gen_model:
+    type: TrainGenModel
+    dataset: my_dataset
+    method: pwm
+    gen_examples_count: 100
+    number_of_processes: 4
+    training_percentage: 0.7
+    export_generated_dataset: true
+    export_combined_dataset: false
+    reports: [my_seq_lengths]
+  exp_analysis:
+    type: ExploratoryAnalysis
+    analyses:
+      first_analysis:
+        dataset: my_dataset
+        report: my_seq_lengths
+

@@ -1,4 +1,5 @@
-categories: 
-- "Machine Learning"
 name: immuneml_tools
-owner: immuneml
+owner: pavelva
+description: "immuneML is a platform for machine learning-based analysis and classification of adaptive immune receptors and repertoires (AIRR)."
+categories:
+  - "Machine Learning"

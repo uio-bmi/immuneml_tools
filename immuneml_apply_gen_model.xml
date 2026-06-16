@@ -1,0 +1,78 @@
+<tool id="immuneml_apply_gen_model" name="Apply Generative Model" version="@VERSION@.0">
+    <description>Apply Generative Model</description>
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+  <command><![CDATA[
+      cp "$generative_model" ./imported_generative_model.zip &&
+
+      python3 '$__tool_directory__/build_apply_gen_model_specs.py'
+      --output_path . --file_name apply_gen_model.yaml --ml_config_path ./imported_generative_model.zip --gen_example_count $gen_example_count
+      #for $report_name in $reports
+        --"$report_name" True
+      #end for
+
+      && cp ./apply_gen_model.yaml ${specs} &&
+      immune-ml ./apply_gen_model.yaml ${html_outfile.files_path} --tool ApplyGenModelTool || immuneml_exit_code=\$? &&
+
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit \$immuneml_exit_code
+      ]]>
+  </command>
+  <inputs>
+     <param name="generative_model" type="data" format="zip" label="Trained generative model as a zip file" />
+     <param name="gen_example_count" type="integer" value="100" label="Number of examples to generate" />
+     <param name="reports" type="select" label="Which reports would you like to include?" help="" display="checkboxes" multiple="true">
+       <option value="sequence_length_report">Sequence length distribution</option>
+       <option value="amino_acid_report">Amino acid frequency distribution</option>
+       <option value="gen_model_overview">Generative model overview</option>
+     </param>
+  </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="apply_gen_model.yaml"/>
+        <data format="zip" name="archive" label="Archive: Generated dataset"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
+    </outputs>
+
+
+    <help><![CDATA[
+
+        This Galaxy tool allows users to use the trained generative model (as done by the
+        `Train Generative Model <root?tool_id=immuneml_train_gen_model>`_ tool) to generate new examples.
+        Optionally, it can provide some reports of the generated data or of the model used for generation.
+
+        This tool runs the immuneML ApplyGenModel instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#applygenmodel>`_ for details).
+	    See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
+
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - immuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools.
+          The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, and available labels.
+          When running optional reports, the report results are shown here as well.
+
+        - Archive: immuneML dataset: a .zip file containing the complete output folder as it was produced by immuneML.
+          This folder contains the raw immuneML dataset files, optional report results and log file.
+
+        - apply_gen_model.yaml: the YAML specification file that was used by immuneML to apply the generative model.
+          This file can be altered to add more advanced parameters (use the `Run immuneML with any YAML specification <root?tool_id=immuneml_yaml>`_ tool),
+          or downloaded to run on the command line.
+
+    ]]>
+    </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
+
+</tool>

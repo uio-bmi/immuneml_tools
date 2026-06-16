@@ -1,15 +1,21 @@
-<tool id="immuneml_train_ml_model" name="Train machine learning models" version="@VERSION@.0">
-  <description></description>
+<tool id="immuneml_train_ml_model" name="Train ML Classifiers" version="@VERSION@.0">
+    <description>Train ML Classifiers</description>
+
     <macros>
         <import>prod_macros.xml</import>
     </macros>
-    <expand macro="requirements" />
-  <command><![CDATA[
 
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+
+    <command><![CDATA[
       #if $iml_input
-         cp -r ${iml_input.extra_files_path}/result/* . &&
-	 (mv repertoires/* . &>/dev/null || :) &&
-	 rm -rf repertoires &&
+         cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+	     (mv repertoires/* . &>/dev/null || :) &&
+	     rm -rf repertoires &&
       #end if
 
       #set $input_orig_names = []
@@ -20,22 +26,23 @@
           #end for#
       #end if
 
-      cp "$yaml_input" yaml_copy &&
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainMLModel &&
+      cp "$yaml_input" specs.yaml &&
+      immune-ml ./specs.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel || immuneml_exit_code=\$? &&
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
       mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model} &&
-      mv ${html_outfile.files_path}/immuneML_output.zip $archive
+      exit \$immuneml_exit_code
       ]]>
   </command>
   <inputs>
-      <param name="iml_input" type="data" format="immuneml_receptors" label="immuneML dataset" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+      <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="true" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
       <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
       <param name="data_input" type="data" multiple="true" label="Additional files" optional="true" help="This field should include individual repertoire files, metadata files, receptor data and others."/>
   </inputs>
     <outputs>
         <data format="zip" name="optimal_model" label="optimal_ml_settings.zip"/>
-        <data format="zip" name="archive" label="Archive: ML model training"/>
-        <data format="html" name="html_outfile" label="Summary: ML model training"/>
+        <data format="zip" name="archive" label="Archive: Train ML Classifiers"/>
+        <data format="html" name="html_outfile" label="Summary: Train ML Classifiers"/>
     </outputs>
 
 
@@ -44,28 +51,34 @@
 
       This tool can be used to run hyperparameter optimization over several different ML settings,
       which include ML models and their parameters, encodings and preprocessing steps. Nested cross-validation is used to identify the optimal combination of ML settings.
-
       This is a YAML-based Galaxy tool, if you prefer a button-based interface that assumes less ML knowledge,
       see `Train immune receptor classifiers (easy interface) <root?tool_id=immuneml_train_classifiers>`_ and
       `Train immune repertoire classifiers (easy interface) <root?tool_id=novice_immuneml_interface>`_.
 
-      For more details on how to train ML models in Galaxy, see `the documentation <https://docs.immuneml.uio.no/latest/galaxy/galaxy_train_ml_models.html>`_.
+      This tool runs the immuneML TrainMLModel instruction (see `the instruction documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#trainmlmodel>`_ for details).
+      See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
 
       **Tool output**
 
       This Galaxy tool will produce the following history elements:
 
-      - Summary: ML model training: a HTML page that allows you to browse through all results, including prediction accuracies on
+      - Summary: Train ML Classifiers: a HTML page that allows you to browse through all results, including prediction accuracies on
         the various data splits and report results.
 
-      - Archive: ML model training: a .zip file containing the complete output folder as it was produced by immuneML. This folder
+      - Archive: Train ML Classifiers: a .zip file containing the complete output folder as it was produced by immuneML. This folder
         contains the output of the TrainMLModel instruction including all trained models and their predictions, and report results.
         Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
 
-      - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding). This .zip file can subsequently be used as an input when applying previously trained ML models to a new dataset. Currently, this can only be done locally using the command-line interface.
+      - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding).
+        This .zip file can subsequently be used as an input when applying previously trained ML models to a new dataset,
+        using the `Apply ML Classifier <root?tool_id=immuneml_apply_ml_model>`_ tool.
 
     ]]>
 
   </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>

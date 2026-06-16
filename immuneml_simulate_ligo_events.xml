@@ -1,0 +1,137 @@
+<tool id="immuneml_simulate_ligo_events" name="Simulate Immune Events with LIgO" version="@VERSION@.0">
+    <description>Simulate Immune Events with LIgO</description>
+
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+  <command><![CDATA[
+      #if $interface_cond.interface_type == "yaml"
+        cp $yaml_input simulate_ligo.yaml
+      #else
+        python3 '$__tool_directory__/build_ligo_yaml_wrapper.py'
+        --output_path . --file_name simulate_ligo.yaml --motif_seed $interface_cond.motif_seed
+        --chain_type $interface_cond.chain_type --example_with_motif_count $interface_cond.dataset_cond.example_with_motif_count
+        --example_without_motif_count $interface_cond.dataset_cond.example_without_motif_count --simulation_strategy $interface_cond.simulation_strategy --dataset_type $interface_cond.dataset_cond.dataset_type
+        #if $interface_cond.dataset_cond.dataset_type == "repertoire"
+        --repertoire_size "$interface_cond.dataset_cond.repertoire_size"
+        --signal_percentage $interface_cond.dataset_cond.signal_percentage
+        #end if
+      #end if
+
+      && cp ./simulate_ligo.yaml ${specs} &&
+      immune-ml ./simulate_ligo.yaml ${html_outfile.files_path} --tool GalaxySimulationTool || immuneml_exit_code=\$? &&
+
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit \$immuneml_exit_code
+      ]]>
+  </command>
+    <inputs>
+        <conditional name="interface_cond">
+            <param type="select" name="interface_type" label="How would you like to define your simulation parameters?" display="radio"
+                   help="">
+                <option value="buttons">Button-based interface</option>
+                <option value="yaml">YAML specification (full control over parameters)</option>
+            </param>
+            <when value="buttons">
+                <param type="text" name="motif_seed" optional="false" value="AAA" label="Motif seed to implant" help=""/>
+
+                <conditional name="dataset_cond">
+                    <param type="select" name="dataset_type" label="What type of dataset would you like to simulate?" display="radio"
+                    help="">
+                        <option value="repertoire">Repertoire dataset</option>
+                        <option value="sequence">Sequence dataset (single chain)</option>
+                    </param>
+                    <when value="repertoire">
+                        <param type="integer" name="example_with_motif_count" optional="false"  label="How many repertoires to simulate that contain the motif?" value="10" min="1"/>
+                        <param type="integer" name="example_without_motif_count" optional="false"  label="How many repertoires to simulate that do NOT contain the motif?" value="10" min="1"/>
+                        <param type="integer" name="repertoire_size" optional="false"  label="How many sequences to simulate per repertoire?" value="1000" min="1"/>
+                        <param type="float" name="signal_percentage" optional="false"  label="What percentage of the sequences in the repertoire should contain the motif?" value="2"/>
+                    </when>
+                    <when value="sequence">
+                        <param type="integer" name="example_with_motif_count" optional="false"  label="How many sequences to simulate that contain the motif?" value="100" min="1"/>
+                        <param type="integer" name="example_without_motif_count" optional="false"  label="How many sequences to simulate that do NOT contain the motif?" value="100" min="1"/>
+                    </when>
+                </conditional>
+
+                <param type="select" name="chain_type" label="Which chain type to simulate?" display="radio"
+                   help="Background sequences are generated using OLGA. The chain type determines which default OLGA model is internally used.">
+                    <option value="humanTRB">T cell receptor beta</option>
+                    <option value="humanTRA">T cell receptor alpha</option>
+                    <option value="humanIGH">Antibody heavy chain</option>
+                    <option value="humanIGL">Antibody light chain</option>
+                    <option value="humanIGK">Antibody kappa chain</option>
+                </param>
+
+                <param type="select" name="simulation_strategy" label="Which simulation strategy to use?" display="radio"
+                   help="When implanting motifs directly into the original sequence, the natural structure of the sequence may get distorted.
+                   With rejection sampling, instead, a large number of sequences is generated and only those naturally
+                   containing the given motif are kept. Rejection sampling may therefore be more biologically accurate,
+                   but is far slower. ">
+                    <option value="Implanting">Implanting</option>
+                    <option value="RejectionSampling">Rejection sampling</option>
+                </param>
+            </when>
+            <when value="yaml">
+                <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="simulate_ligo.yaml"/>
+        <data format="zip" name="archive" label="Archive: immune signal simulation"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="Simulated immuneML dataset"/>
+    </outputs>
+
+  <help><![CDATA[
+
+        This tool generates synthetic immune receptor datasets (either on repertoire, receptor or sequence level)
+        with different immune events and known ground-truth.
+
+        The simulation setup is flexible and allows the simulation of immune signals (sets of (gapped) k-mers or
+        positional weight matrices with optional V/J gene information and sequence position) and immune events (labels
+        on top of immune signals that could correspond to specific-diseases on the repertoire level).
+
+        The resulting dataset is fully annotated on the sequence level with immune signals and events.
+
+        For more information on the simulation, see the original manuscript:
+
+        - Chernigovskaya, M., Pavlović, M., Kanduri, C., Gielis, S., Robert, P. A., Scheffer, L., Slabodkin, A.,
+          Haff, I. H., Meysman, P., Yaari, G., Sandve, G. K., & Greiff, V. (2023). Simulation of adaptive immune
+          receptors and repertoires with complex immune information to guide the development and benchmarking of
+          AIRR machine learning (p. 2023.10.20.562936). bioRxiv. https://doi.org/10.1101/2023.10.20.562936
+
+	    This tool runs the immuneML LigoSIM instruction (see `the documentation <https://docs.immuneml.uio.no/latest/yaml_specs/instructions.html#ligosim>`_ for details).
+        See also `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_.
+
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - ImmuneML dataset: a dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
+
+        - Archive: LIgO simulation: a .zip file containing the complete output folder as it was produced by immuneML and LIgO. This folder
+          contains the output of the LigoSim instruction including all raw data files.
+          Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
+
+        - simulate_ligo.yaml: the YAML specification file that was used by immuneML to perform the LIgO simulation.
+          This file can be altered to add more advanced parameters (use the 'YAML specification (full control over parameters)' option),
+          or downloaded to run on the command line.
+
+
+    ]]>
+  </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
+
+</tool>

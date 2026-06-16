@@ -1,0 +1,131 @@
+<tool id="immuneml_simulate_random_dummy_dataset" name="Simulate a Random Dummy Dataset" version="@VERSION@.0">
+    <description>Simulate a Random Dummy Dataset</description>
+
+    <macros>
+        <import>prod_macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+
+    <command><![CDATA[
+      #if $interface_cond.interface_type == "yaml"
+        cp $yaml_input simulate_dummy_dataset.yaml &&
+      #else
+        python3 '$__tool_directory__/build_dummy_data_simulation_wrapper.py'
+        --output_path . --file_name simulate_dummy_dataset.yaml
+        --dataset_type $interface_cond.dataset_cond.dataset_type
+        --count $interface_cond.dataset_cond.count
+        --label_name $interface_cond.dataset_cond.label_section.label
+        --class1_name $interface_cond.dataset_cond.label_section.class1
+        --class2_name $interface_cond.dataset_cond.label_section.class2
+        --class_balance $interface_cond.dataset_cond.label_section.class_balance &&
+      #end if
+
+      cp ./simulate_dummy_dataset.yaml ${specs} &&
+      immune-ml ./simulate_dummy_dataset.yaml ${html_outfile.files_path} --tool DataSimulationTool || immuneml_exit_code=\$? &&
+
+      mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+      mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+      exit \$immuneml_exit_code
+      ]]>
+    </command>
+    <inputs>
+        <conditional name="interface_cond">
+            <param type="select" name="interface_type" label="How would you like to define your simulation parameters?" display="radio"
+                   help="">
+                <option value="buttons">Button-based interface</option>
+                <option value="yaml">YAML specification (full control over parameters)</option>
+            </param>
+            <when value="buttons">
+                <conditional name="dataset_cond">
+                    <param type="select" name="dataset_type" label="What type of dataset would you like to simulate?" display="radio"
+                           help="By default, the sequences in the dataset are always annotated as TCR beta chain (or alpha-beta in case of paired chain), with V1-1*01 and J1-1*01 alleles.">
+                        <option value="repertoire">Repertoire dataset</option>
+                        <option value="sequence">Sequence dataset (single chain)</option>
+                        <option value="receptor">Receptor dataset (paired chains)</option>
+                    </param>
+                    <when value="repertoire">
+                        <param type="integer" name="count" label="Number of repertoires" value="100" min="1"/>
+                        <section name="label_section" title="Customize label" >
+                            <param type="text" name="label" label="What should be the name of the randomly assigned label?" value="disease" help=""/>
+
+                            <param type="text" name="class1" label="Name of label class 1:" value="sick" help=""/>
+                            <param type="text" name="class2" label="Name of label class 2:" value="healthy" help=""/>
+
+                            <param type="integer" name="class_balance" label="What percentage of the data should be class 1?" value="50" min="10" max="90" help=""/>
+                        </section>
+                    </when>
+                    <when value="sequence">
+                        <param type="integer" name="count" label="Number of sequences" value="100" min="1"/>
+                        <section name="label_section" title="Customize label" >
+                            <param type="text" name="label" label="What should be the name of the randomly assigned label?" value="antigen" help=""/>
+
+                            <param type="text" name="class1" label="Name of label class 1:" value="binding" help=""/>
+                            <param type="text" name="class2" label="Name of label class 2:" value="nonbinding" help=""/>
+
+                            <param type="integer" name="class_balance" label="What percentage of the data should be class 1?" value="50" min="10" max="90" help=""/>
+                        </section>
+                    </when>
+                    <when value="receptor">
+                        <param type="integer" name="count" label="Number of receptors" value="100" min="1"/>
+                        <section name="label_section" title="Customize label" >
+                            <param type="text" name="label" label="What should be the name of the randomly assigned label?" value="antigen" help=""/>
+
+                            <param type="text" name="class1" label="Name of label class 1:" value="binding" help=""/>
+                            <param type="text" name="class2" label="Name of label class 2:" value="nonbinding" help=""/>
+
+                            <param type="integer" name="class_balance" label="What percentage of the data should be class 1?" value="50" min="10" max="90" help=""/>
+                        </section>
+                    </when>
+                </conditional>
+            </when>
+            <when value="yaml">
+                <param name="yaml_input" type="data" format="txt" label="YAML specification" multiple="false"/>
+            </when>
+        </conditional>
+
+    </inputs>
+    <outputs>
+        <data format="txt" name="specs" label="simulate_dummy_dataset.yaml"/>
+        <data format="zip" name="archive" label="Archive: dataset simulation"/>
+        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (simulated sequences)"/>
+    </outputs>
+
+    <help><![CDATA[
+
+        This Galaxy tool allows you to quickly make a dummy dataset.
+        The tool generates a dataset (consisting of single-chain sequences, paired-chain receptors, or repertoires) consisting
+        of randomly generated CDR3 sequences. This can be used to quickly test out other functionalities.
+
+        Note that since these labels are randomly assigned, they do not bear any meaning and it is not possible to train a ML model with high classification accuracy on this data.
+        Meaningful signals and labels can be added using the `Simulate Immune Events with LIgO <root?tool_id=immuneml_simulate_ligo_events>`_ tool.
+        Alternatively, more realistic synthetic datasets can be created using the `Train Generative Model <root?tool_id=train_gen_model>`_ tool.
+
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
+
+        **Tool output**
+
+        This Galaxy tool will produce the following history elements:
+
+        - ImmuneML dataset (simulated sequences): a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools. The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
+          (which is used in the dataset definition of a yaml specification), the dataset type and size, available labels, and a link to download the raw data files.
+
+        - Archive: dataset simulation: a .zip file containing the complete output folder as it was produced by immuneML. This folder
+          contains the output of the DatasetExport instruction including raw data files.
+          Furthermore, the folder contains the complete YAML specification file for the immuneML run, the HTML output and a log file.
+
+        - simulate_dummy_dataset.yaml: the YAML specification file that was used by immuneML to generate the random data.
+          This file can be altered to add more advanced parameters (use the 'YAML specification (full control over parameters)' option),
+          or downloaded to run on the command line.
+    ]]>
+    </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
+
+</tool>

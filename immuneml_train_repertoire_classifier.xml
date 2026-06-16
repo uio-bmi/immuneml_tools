@@ -1,63 +1,70 @@
-<tool id="novice_immuneml_interface" name="Train immune repertoire classifiers (simplified interface)" version="@VERSION@.0">
-  <description></description>
+<tool id="immuneml_train_repertoire_classifier" name="Train Repertoire Classifiers (Simplified Interface)" version="@VERSION@.0">
+    <description>Train Repertoire Classifiers (Simplified Interface)</description>
+
     <macros>
         <import>prod_macros.xml</import>
     </macros>
+
     <expand macro="requirements" />
+
+    <stdio>
+        <exit_code range="1:" />
+    </stdio>
+
     <command><![CDATA[
+    #if $iml_input
+       cp -r ${iml_input.extra_files_path}/galaxy_dataset/* . &&
+	   (mv repertoires/* . &>/dev/null || :) &&
+	   rm -rf repertoires &&
+    #end if
 
-      #if $iml_input
-         cp -r ${iml_input.extra_files_path}/result/* . &&
-	 (mv repertoires/* . &>/dev/null || :) &&
-	 rm -rf repertoires &&
-      #end if
+    python '$__tool_directory__/build_train_ml_model_yaml.py'
+    --output_path . --file_name repertoire_classification.yaml
+    #if $labels
+        --labels "$labels"
+    #end if
+    #if $ml_methods
+        #set methods_splitted = str($ml_methods).replace(",", " ")
+        --ml_methods $methods_splitted
+    #end if
+    #if $training_percentage
+        --training_percentage $training_percentage
+    #end if
+    #if $split_count
+        --split_count $split_count
+    #end if
+    #if $sequence_cond.sequence_type
+        --sequence_type $sequence_cond.sequence_type
+    #end if
+    #if $sequence_cond.sequence_type == "subsequence"
+        --position_type $sequence_cond.position_type
+        --gap_type $sequence_cond.gap_cond.gap_type
+        #if $sequence_cond.gap_cond.gap_type == "ungapped"
+            --k $sequence_cond.gap_cond.k
+        #end if
+        #if $sequence_cond.gap_cond.gap_type == "gapped"
+            --k_left $sequence_cond.gap_cond.k_left
+            --k_right $sequence_cond.gap_cond.k_right
+            --min_gap $sequence_cond.gap_cond.min_gap
+            --max_gap $sequence_cond.gap_cond.max_gap
+        #end if
+    #end if
+    #if $reads
+        --reads $reads
+    #end if
 
-        python '$__tool_directory__/build_yaml_from_arguments_wrapper.py' --output_path $specs.files_path
-        #if $labels
-            --labels "$labels"
-        #end if
-        #if $ml_methods
-            #set methods_splitted = str($ml_methods).replace(",", " ")
-            --ml_methods $methods_splitted
-        #end if
-        #if $training_percentage
-            --training_percentage $training_percentage
-        #end if
-        #if $split_count
-            --split_count $split_count
-        #end if
-        #if $sequence_cond.sequence_type
-            --sequence_type $sequence_cond.sequence_type
-        #end if
-        #if $sequence_cond.sequence_type == "subsequence"
-            --position_type $sequence_cond.position_type
-            --gap_type $sequence_cond.gap_cond.gap_type
-            #if $sequence_cond.gap_cond.gap_type == "ungapped"
-                --k $sequence_cond.gap_cond.k
-            #end if
-            #if $sequence_cond.gap_cond.gap_type == "gapped"
-                --k_left $sequence_cond.gap_cond.k_left
-                --k_right $sequence_cond.gap_cond.k_right
-                --min_gap $sequence_cond.gap_cond.min_gap
-                --max_gap $sequence_cond.gap_cond.max_gap
-            #end if
-        #end if
-        #if $reads
-            --reads $reads
-        #end if
+    && cp ./repertoire_classification.yaml ${specs} &&
 
-       && cp ${specs.files_path}/specs.yaml yaml_copy &&
+    immune-ml ./repertoire_classification.yaml ${html_outfile.files_path} --tool GalaxyTrainMLModel || immuneml_exit_code=\$? &&
 
-      immune-ml ./yaml_copy ${html_outfile.files_path} --tool GalaxyTrainMLModel
-
-      && mv ${html_outfile.files_path}/index.html ${html_outfile}
-      && mv ${specs.files_path}/specs.yaml ${specs}
-      && mv ${html_outfile.files_path}/immuneML_output.zip $archive
-      && mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model}
-      ]]>
+    mv ${html_outfile.files_path}/index.html ${html_outfile} &&
+    mv ${html_outfile.files_path}/immuneML_output.zip $archive &&
+    mv ${html_outfile.files_path}/exported_models/*.zip ${optimal_model} &&
+    exit \$immuneml_exit_code
+    ]]>
 </command>
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors"  label="immuneML dataset (immune repertoires)" help="Here you can select an ImmuneML dataset containing a repertoire dataset, as produced by the ‘Create dataset’ tool. Please make sure your dataset contains enough repertoires, we recommend using at least 50. The minimum number of repertoires needed to run this tool successfully is 14 (for example: 7 diseased and 7 healthy). More repertoires are needed if your dataset is imbalanced (many more diseased or many more healthy), or if you decrease the percentage of data that is used for training. "/>
+        <param name="iml_input" type="data" format="immuneml_receptors.html"  label="immuneML dataset (immune repertoires)" help="Here you can select an ImmuneML dataset containing a repertoire dataset, as produced by the ‘Create dataset’ tool. Please make sure your dataset contains enough repertoires, we recommend using at least 50. The minimum number of repertoires needed to run this tool successfully is 14 (for example: 7 diseased and 7 healthy). More repertoires are needed if your dataset is imbalanced (many more diseased or many more healthy), or if you decrease the percentage of data that is used for training. "/>
         <param type="text" name="labels" optional="false" label="Which property (“label”) of the repertoires would you like to predict?" help="Repertoire property to predict could for example be a disease status. This property must be present as a label in the repertoire metadata."/>
 
         <conditional name="sequence_cond">
@@ -117,7 +124,7 @@
         Alternatively, if you want to predict a property per immune receptor, such as antigen specificity, check out the
         `Train immune receptor classifiers (simplified interface) <root?tool_id=immuneml_train_classifiers>`_ tool instead.
 
-        The full documentation can be found `here <https://docs.immuneml.uio.no/latest/galaxy/galaxy_simple_repertoires.html>`_.
+        See `the immuneML Galaxy documentation <https://docs.immuneml.uio.no/galaxy.html>`_ for more details, tips and useful information.
 
         **Basic terminology**
 
@@ -218,7 +225,7 @@
         - optimal_ml_settings.zip: a .zip file containing the raw files for the optimal trained ML settings (ML model, encoding). This .zip file can subsequently be used as an input when applying previously trained ML models to a new dataset. Currently, this can only be done locally using the command-line interface.
 
         - repertoire_classification.yaml: the YAML specification file that was used by immuneML internally to run the analysis. This file can be
-          downloaded, altered, and run again by immuneML using the  `Train machine learning models <root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
+          downloaded, altered, and run again by immuneML using the  `Train ML Classifiers <root?tool_id=immuneml_train_ml_model>`_ Galaxy tool.
 
         **More analysis options**
 
@@ -230,5 +237,9 @@
 
     ]]>
     </help>
+
+    <citations>
+        <citation type="doi">10.1038/s42256-021-00413-z</citation>
+    </citations>
 
 </tool>
