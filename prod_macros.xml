@@ -4,7 +4,7 @@
         <requirements>
             <requirement type="package" version="@VERSION@">immuneml</requirement>
             <requirement type="package" version="3.11.*">python</requirement>
-            <requirement type="package" version="&lt;78">setuptools</requirement>
+            <requirement type="package" version="&lt;70">setuptools</requirement>
         </requirements>
     </xml>
 </macros>
