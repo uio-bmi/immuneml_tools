@@ -15,7 +15,7 @@
       #if $interface_cond.interface_type == "yaml"
         cp $yaml_input simulate_dummy_dataset.yaml &&
       #else
-        python3 '$__tool_directory__/build_dummy_data_simulation_wrapper.py'
+        python '$__tool_directory__/build_dummy_data_simulation_wrapper.py'
         --output_path . --file_name simulate_dummy_dataset.yaml
         --dataset_type $interface_cond.dataset_cond.dataset_type
         --count $interface_cond.dataset_cond.count
