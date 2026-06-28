@@ -2,7 +2,7 @@
     <token name="@VERSION@">3.0.27</token>
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="@VERSION@">immuneMl</requirement>
+            <requirement type="package" version="@VERSION@">immuneML</requirement>
             <requirement type="package" version="3.11.*">python</requirement>
             <requirement type="package" version="&lt;81">setuptools</requirement>
         </requirements>
