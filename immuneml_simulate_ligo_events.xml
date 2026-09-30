@@ -86,7 +86,18 @@
     <outputs>
         <data format="txt" name="specs" label="simulate_ligo.yaml"/>
         <data format="zip" name="archive" label="Archive: immune signal simulation"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="Simulated immuneML dataset"/>
+        <data format="immuneml_receptors.html"
+              name="html_outfile"
+              label="Simulated immuneML dataset">
+            <change_format>
+                <when input="interface_cond.dataset_cond.dataset_type"
+                      value="sequence"
+                      format="immuneml_sequence.html"/>
+                <when input="interface_cond.dataset_cond.dataset_type"
+                      value="repertoire"
+                      format="immuneml_repertoire.html"/>
+            </change_format>
+        </data>
     </outputs>
 
   <help><![CDATA[
