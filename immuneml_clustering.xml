@@ -39,7 +39,7 @@
       ]]>
     </command>
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="false" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+        <param name="iml_input" type="data" format="immuneml_sequence.html" label="immuneML dataset" optional="false" help="This field accepts an immuneML sequence dataset, as created by the Create Dataset tool."/>
 
         <conditional name="include_label_cond">
             <param type="select" name="include_label" label="Would you like to include label information to assess clustering performance?" help="" display="radio">
