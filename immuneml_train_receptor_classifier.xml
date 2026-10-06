@@ -81,7 +81,7 @@
         <param type="select" name="ml_methods" label="Which ML methods would you like to include?" help="For each ML method, the optimal hyper parameter settings are determined and the performance of the methods is compared to each other."
             display="checkboxes" multiple="true">
           <option value="RandomForestClassifier">Random forest</option>
-          <option value="SimpleLogisticRegression">Logistic regression</option>
+          <option value="SimpleLogisticRegression" selected="true">Logistic regression</option>
           <option value="SVM">Support Vector Machine</option>
           <option value="KNN">K-nearest neighbors</option>
         </param>
