@@ -36,11 +36,11 @@
       mv ${html_outfile.files_path}/index.html ${html_outfile} &&
       mv ${html_outfile.files_path}/immuneML_output.zip $archive
 
-      && cat > galaxy.json <<EOF
-        {"type":"dataset","dataset":"${specs.id}","info":"an HTML page for browsing through all results."}
-        {"type":"dataset","dataset":"${archive.id}","info":"A .zip file containing the complete output folder as it was produced by immuneML."}
-        {"type":"dataset","dataset":"${html_outfile.id}","info":"An HTML summary containing the immuneML clustering results and reports."}
-        EOF
+      && printf '%s\n' \
+        '{"type":"dataset","dataset":"${specs.id}","info":"The YAML specification file used by immuneML to run the clustering analysis."}' \
+        '{"type":"dataset","dataset":"${archive.id}","info":"A .zip file containing the complete output folder as it was produced by immuneML."}' \
+        '{"type":"dataset","dataset":"${html_outfile.id}","info":"An HTML page for browsing the immuneML clustering results and reports."}' \
+        > galaxy.json
 
       && exit \$immuneml_exit_code
       ]]>
