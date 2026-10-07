@@ -186,7 +186,7 @@
 
           </when>
           <when value="history">
-              <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset"
+              <param name="iml_input" type="data" format="immuneml_receptors.html,immuneml_sequence.html,immuneml_receptor.html,immuneml_repertoire.html" label="immuneML dataset"
                      optional="false"
                      help="This field accepts a previously generated immuneML dataset."/>
 
@@ -217,7 +217,21 @@
     <outputs>
         <data format="txt" name="specs" label="create_dataset.yaml"/>
         <data format="zip" name="archive" label="Archive: immuneML dataset"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="immuneML dataset"/>
+        <data format="immuneml_receptors.html"
+              name="html_outfile"
+              label="immuneML dataset">
+            <change_format>
+                <when input="import_cond.dataset_cond.dataset_type"
+                      value="sequence"
+                      format="immuneml_sequence.html"/>
+                <when input="import_cond.dataset_cond.dataset_type"
+                      value="receptor"
+                      format="immuneml_receptor.html"/>
+                <when input="import_cond.dataset_cond.dataset_type"
+                      value="repertoire"
+                      format="immuneml_repertoire.html"/>
+            </change_format>
+        </data>
     </outputs>
 
 

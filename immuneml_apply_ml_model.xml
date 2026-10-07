@@ -31,7 +31,7 @@
       ]]>
     </command>
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset" optional="false" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
+        <param name="iml_input" type="data" format="immuneml_receptors.html,immuneml_sequence.html,immuneml_receptor.html,immuneml_repertoire.html" label="immuneML dataset" optional="false" help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
         <param name="trained_model" type="data" format="zip" label="Trained ML model (zip)" optional="false"/>
     </inputs>
     <outputs>

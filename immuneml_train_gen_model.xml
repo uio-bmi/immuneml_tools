@@ -45,7 +45,7 @@
     </command>
 
     <inputs>
-        <param name="iml_input" type="data" format="immuneml_receptors.html" label="immuneML dataset for training" optional="false"
+        <param name="iml_input" type="data" format="immuneml_sequence.html" label="immuneML dataset for training" optional="false"
                help="This field accepts an ImmuneML dataset, as created by the Create Dataset tool."/>
 
         <conditional name="interface_cond">
@@ -96,7 +96,7 @@
         <data format="txt" name="specs" label="train_generative_model.yaml"/>
         <data format="zip" name="generative_model" label="generative_model.zip"/>
         <data format="zip" name="archive" label="Archive: Train Generative Model"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
+        <data format="immuneml_sequence.html" name="html_outfile" label="ImmuneML sequence dataset (from generative model)"/>
     </outputs>
 
     <help>

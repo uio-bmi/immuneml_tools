@@ -38,7 +38,7 @@
     <outputs>
         <data format="txt" name="specs" label="apply_gen_model.yaml"/>
         <data format="zip" name="archive" label="Archive: Generated dataset"/>
-        <data format="immuneml_receptors.html" name="html_outfile" label="ImmuneML dataset (from generative model)"/>
+        <data format="immuneml_sequence.html" name="html_outfile" label="ImmuneML sequence dataset (from generative model)"/>
     </outputs>
 
 
@@ -56,7 +56,7 @@
 
         This Galaxy tool will produce the following history elements:
 
-        - immuneML dataset: a sequence, receptor or repertoire dataset which can be used as an input to other immuneML tools.
+        - ImmuneML sequence dataset: a dataset containing generated immune receptor sequences which can be used as input to compatible immuneML tools.
           The history element contains a summary HTML page describing general characteristics of the dataset, including the name of the dataset
           (which is used in the dataset definition of a yaml specification), the dataset type and size, and available labels.
           When running optional reports, the report results are shown here as well.
